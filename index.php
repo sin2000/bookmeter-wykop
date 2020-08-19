@@ -131,7 +131,7 @@ $login_name = htmlspecialchars($app->get_session_login_name());
 
       <div class="form-row">
         <div class="col-md mb-3">
-          <label for="image_url_input">Url obrazka:</label>
+          <label for="image_url_input">Url obrazka</label>
           <input id="image_url_input" type="text" name="image_url_input" class="form-control">
         </div>
       </div>

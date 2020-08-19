@@ -56,7 +56,7 @@ class counter_file
       foreach ($wdata as $entry)
       {
         $body = $entry['body'] ?? '';
-        if(preg_match('/=\s*(\d+)/', $body, $matches))
+        if(preg_match('/^[ ]*\d+[ ]*\+[ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
         {
           $api_counter = $matches[1] ?? -1;
           break;
