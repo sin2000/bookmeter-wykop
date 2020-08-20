@@ -5,3 +5,4 @@ node_modules
 package.json
 vsc_workspace.code-workspace
 .vscode
+utils/confidential_vars.php
