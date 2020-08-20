@@ -1,13 +1,19 @@
 <?php
 
+require_once 'confidential_vars.php';
+
 class wykop_api
 {
-  //private $appkey = '';
-  private $appkey = '';
+  private $appkey;
   private $readonly_appkey = 'aNd401dAPp';
-  private $appsecret = '';
-  //private $appsecret = '';
+  private $appsecret;
   private $base_api_url = 'https://a2.wykop.pl';
+
+  public function __construct()
+  {
+    $this->appkey = confidential_vars::$wykop_api_appkey;
+    $this->appsecret = confidential_vars::$wykop_api_appsecret;
+  }
 
   public function get_appkey()
   {

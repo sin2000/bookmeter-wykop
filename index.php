@@ -112,6 +112,15 @@ $login_name = htmlspecialchars($app->get_session_login_name());
           </div>
         </div>
       </div>
+      <div class="form-row">
+        <div class="col-md mb-3">
+          <label for="isbn_input">ISBN</label>
+          <input id="isbn_input" type="text" name="isbn_input" class="form-control">
+          <div class="invalid-tooltip">
+            Numer ISBN jest niepoprawny
+          </div>
+        </div>
+      </div>
 
       <div class="form-row">
         <div class="col-md mb-3">
@@ -121,11 +130,16 @@ $login_name = htmlspecialchars($app->get_session_login_name());
       </div>
 
       <div class="form-row">
-        <div class="col-md mb-3">
+        <div class="col mb-3">
           <div class="custom-file">
             <input id="file_input" type="file" name="file_input" class="form-control custom-file-input" lang="pl">
             <label class="custom-file-label" for="file_input">Dołącz obrazek z dysku</label>
           </div>
+        </div>
+        <div class="col-auto mb-3">
+          <a id="file_input_reset_button" class="btn btn-primary" href="" aria-label="Usuń plik" title="Usuń plik">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </a>
         </div>
       </div>
 
@@ -200,7 +214,7 @@ $login_name = htmlspecialchars($app->get_session_login_name());
   <script src="./js/jquery-3.5.1.min.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js" type="text/javascript"></script>
+  <script src="./js/main.js?v=2" type="text/javascript"></script>
 </body>
 
 </html>

@@ -1,0 +1,7 @@
+node_modules
+.eslintrc.json
+.htaccess
+.user.ini
+package.json
+vsc_workspace.code-workspace
+.vscode

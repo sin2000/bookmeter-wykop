@@ -1,15 +1,22 @@
 <?php
 
 require_once 'wykop_api.php';
+include_once 'confidential_vars.php';
 
 class app_auth
 {
   private $cookie_login_key = 'autha';
   private $cookie_token_key = 'authb';
   private $login_redirect_page = 'login.php';
-  private $login_name_cipher_key_b64 = '';
-  private $token_cipher_key_b64 = '';
+  private $login_name_cipher_key_b64;
+  private $token_cipher_key_b64;
   private $cipher_method = 'aes-256-gcm';
+
+  public function __construct()
+  {
+    $this->login_name_cipher_key_b64 = confidential_vars::$login_name_cipher_key_b64;
+    $this->token_cipher_key_b64 = confidential_vars::$token_cipher_key_b64;
+  } 
 
   public function redirect_to_login()
   {

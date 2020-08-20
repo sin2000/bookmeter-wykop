@@ -17,7 +17,7 @@
   }
 
   function scroll_top() {
-    $('html, body').animate({scrollTop: '0px'}, 300);
+    $("html, body").animate({scrollTop: "0px"}, 300);
   }
 
   function show_server_error(error_text) {
@@ -36,6 +36,60 @@
   function reset_form() {
     $("#add_entry_form").trigger("reset");
     reset_star_rating();
+  }
+
+  function validate_isbn() {
+
+    var elem = $("#isbn_input");
+
+    var input_text = elem.val();
+    if (input_text == "")
+    {
+      elem[0].setCustomValidity("");
+      return;
+    }
+
+    input_text = input_text.trim();
+    var is_valid = false;
+    var regex = /^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$/;
+    if(regex.test(input_text)) {
+      var chars = input_text.replace(/[- ]|^ISBN(?:-1[03])?:?/g, "").split("");
+      var last = chars.pop();
+      var sum = 0;
+      var check, i;
+
+      if(chars.length == 9) {
+        chars.reverse();
+        for(i = 0; i < chars.length; i++) {
+          sum += (i + 2) * parseInt(chars[i], 10);
+        }
+        check = 11 - (sum % 11);
+        if(check == 10) {
+          check = "X";
+        } else if(check == 11) {
+          check = "0";
+        }
+      } else {
+        for(i = 0; i < chars.length; i++) {
+          sum += (i % 2 * 2 + 1) * parseInt(chars[i], 10);
+        }
+        check = 10 - (sum % 10);
+        if(check == 10) {
+          check = "0";
+        }
+      }
+
+      if(check == last) {
+        is_valid = true;
+      }
+    }
+
+    if(is_valid == false) {
+      elem[0].setCustomValidity("bad ISBN");
+    }
+    else {
+      elem[0].setCustomValidity("");
+    }
   }
 
   function get_internal_counter() {
@@ -63,7 +117,9 @@
 
   $("#add_entry_form").submit(function(event) {
     event.preventDefault();
-    //event.stopPropagation();
+
+    validate_isbn();
+
     var form = this;
     if(form.checkValidity() === true) {
       var post_url = $(this).attr("action");
@@ -90,10 +146,6 @@
                 scroll_top();
               }
             }
-            
-            //reset_form();
-            console.log(response);
-            //location.reload();
           },
           error: function() {
             hide_spinner();
@@ -110,13 +162,28 @@
     form.classList.add("was-validated");
   });
   
-  window.addEventListener("load", function() {    
+  window.addEventListener("load", function() {
 
     document.querySelector(".custom-file-input").addEventListener("change", function(e) {
       var fileName = document.getElementById("file_input").files[0].name;
       var nextSibling = e.target.nextElementSibling
       nextSibling.innerText = fileName
-    })
+    });
+
+    $("#isbn_input").on("blur", function () {
+      validate_isbn();
+    });
+
+    $("#file_input_reset_button").click(function (e) {
+      e.preventDefault();
+      var file_label = $(".custom-file-label");
+      var file_label_text = "Dołącz obrazek z dysku";
+
+      if(file_label.text() != file_label_text) {
+        $("#file_input").val("");
+        $(file_label.text(file_label_text));
+      }      
+    });
 
     get_internal_counter();
   
