@@ -81,6 +81,7 @@ function validate_file($file_data, $file_type)
 $title_input = trim($_POST['title_input']);
 $author_input = trim($_POST['author_input']);
 $genre_input = trim($_POST['genre_input']);
+$isbn_input = trim($_POST['isbn_input']);
 $descr_input = trim($_POST['descr_input']);
 $file_input = $_FILES['file_input'];
 $file_type = empty($file_input['tmp_name']) ? false : mime_content_type($file_input['tmp_name']);
@@ -118,10 +119,15 @@ $predicted_counter++;
 $append_ad = $add_ad_input == 'on' ? true : false;
 $ad = "Wpis dodano za pomocą strony: [" . $app->get_current_base_url() . "](" . $app->get_current_base_url() . ")";
 
+$isbn_row = "";
+if(empty($isbn_input) == false)
+  $isbn_row = "**ISBN:** " . $isbn_input . "\n";
+
 $body = $predicted_counter_start . " + 1 = " . $predicted_counter . "\n\n"
   . "**Tytuł:** " . $title_input . "\n"
   . "**Autor:** " . $author_input . "\n"
   . "**Gatunek:** " . $genre_input . "\n"
+  . $isbn_row
   . "**Ocena:** " . $selected_rating_input . "/10\n\n"
   . $descr_input . "\n\n"
   . ($append_ad == true ? ($ad . "\n\n") : "")
