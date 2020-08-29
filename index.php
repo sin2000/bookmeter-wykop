@@ -10,6 +10,7 @@ session_start();
 $app = new app_auth;
 $app->redirect_to_login();
 $login_name = htmlspecialchars($app->get_session_login_name());
+Csrf::removeToken('index');
 
 ?>
 
