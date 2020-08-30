@@ -1,12 +1,10 @@
 <?php
 
-require_once 'wykop_api.php';
-
 class counter_file
 {
   private $counter_filepath = 'counter.txt';
 
-  function get_counter_value()
+  public function get_counter_value()
   {
     $file_counter = -1;
     $handle = fopen($this->counter_filepath, 'r');
@@ -23,7 +21,7 @@ class counter_file
     return $file_counter;
   }
 
-  function set_counter_value($val)
+  public function set_counter_value($val)
   {
     $handle = fopen($this->counter_filepath, 'w');
     if(flock($handle, LOCK_EX))
@@ -34,36 +32,11 @@ class counter_file
     fclose($handle);
   }
 
-  function increase_counter_value()
+  public function increase_counter_value()
   {
     $curr_counter = $this->get_counter_value();
     $curr_counter++;
 
     $this->set_counter_value($curr_counter);
-  }
-
-  function get_api_counter($tag_name)
-  {
-    $wapi = new wykop_api();
-
-    $jdata = $wapi->tag_entries($tag_name);
-
-    $api_counter = -1;
-    $matches = array();
-    $wdata = $jdata['data'] ?? null;
-    if(isset($wdata) && is_array($wdata))
-    {
-      foreach ($wdata as $entry)
-      {
-        $body = $entry['body'] ?? '';
-        if(preg_match('/^[ ]*\d+[ ]*\+[ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
-        {
-          $api_counter = $matches[1] ?? -1;
-          break;
-        }
-      }
-    }
-
-    return $api_counter;
   }
 }

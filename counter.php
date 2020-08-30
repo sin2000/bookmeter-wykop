@@ -7,11 +7,13 @@ if(!isset($_COOKIE[session_name()]))
 }
 
 require_once 'utils/counter_file.php';
+require_once 'utils/bookmeter_utils.php';
 require_once 'utils/site_globals.php';
 
-$counter = new counter_file();
+$counter = new counter_file;
+$bm = new bookmeter_utils;
 
-$api_counter = $counter->get_api_counter(site_globals::$tag_name);
+$api_counter = $bm->get_api_counter(site_globals::$tag_name);
 
 $file_counter = $counter->get_counter_value();
 

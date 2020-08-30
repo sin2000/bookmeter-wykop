@@ -3,6 +3,7 @@
 require_once 'utils/csrf.php';
 require_once 'utils/wykop_api.php';
 require_once 'utils/counter_file.php';
+require_once 'utils/bookmeter_utils.php';
 require_once 'utils/app_auth.php';
 require_once 'utils/site_globals.php';
 use steveclifton\phpcsrftokens\Csrf;
@@ -109,8 +110,9 @@ $userkey = $login_result->content['data']['userkey'];
 error_if_empty($userkey, 'brak userkey');
 
 $counter = new counter_file;
+$bm = new bookmeter_utils;
 $predicted_counter = $counter->get_counter_value();
-$api_counter = $counter->get_api_counter(site_globals::$tag_name);
+$api_counter = $bm->get_api_counter(site_globals::$tag_name);
 if($api_counter > $predicted_counter)
   $predicted_counter = $api_counter;
 
