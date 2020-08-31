@@ -51,6 +51,24 @@ Csrf::removeToken('index');
     </div>
   </div>
 
+  <div id="preview_modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Podgląd wpisu</h5>
+        </div>
+        <div class="modal-body">
+          <div style="line-height: 94%;">
+            <span id="preview_content" class="small"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="preview_modal_ok_btn" type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="main_content" class="container mt-4">
 
     <div class="form-row mb-2">
@@ -130,7 +148,7 @@ Csrf::removeToken('index');
         </div>
       </div>
 
-      <div class="form-row">
+      <div class="form-row align-items-center">
         <div class="col mb-3">
           <div class="custom-file">
             <input id="file_input" type="file" name="file_input" class="form-control custom-file-input" lang="pl">
@@ -200,7 +218,14 @@ Csrf::removeToken('index');
         <label class="custom-control-label" for="add_ad_input">Dołącz informację o tej stronie</label>
       </div>
 
-      <button class="btn btn-primary pl-5 pr-5" type="submit">Wyślij</button>
+      <div class="form-row mb-3 align-items-center">
+        <div class="col-auto">
+          <button class="btn btn-primary pl-5 pr-5" type="submit">Wyślij</button>
+        </div>
+        <div class="col-auto">
+          <button id="preview_button" class="btn btn-outline-primary pl-4 pr-4" type="button">Podgląd</button>
+        </div>
+      </div>
     </form>
 
     <footer class="mt-4 mb-4">
@@ -215,7 +240,7 @@ Csrf::removeToken('index');
   <script src="./js/jquery-3.5.1.min.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=2" type="text/javascript"></script>
+  <script src="./js/main.js?v=3" type="text/javascript"></script>
 </body>
 
 </html>

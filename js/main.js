@@ -16,6 +16,11 @@
     $("#success_modal").modal({backdrop: "static", keyboard: false});
   }
 
+  function show_preview_modal(body) {
+    $("#preview_content").html(body);
+    $("#preview_modal").modal({backdrop: "static", keyboard: false});
+  }
+
   function scroll_top() {
     $("html, body").animate({scrollTop: "0px"}, 300);
   }
@@ -140,6 +145,48 @@
             if(is_undefined(response) == false && is_undefined(response.errmsg) == false) {
               if(response.errmsg == "") {
                 show_success_modal();
+              }
+              else {
+                show_server_error(response.errmsg);
+                scroll_top();
+              }
+            }
+          },
+          error: function() {
+            hide_spinner();
+            $("#timeout_alert").show();
+            scroll_top();
+            console.log("error");
+          }
+        });
+      });
+
+      hide_server_error();
+      show_spinner();
+    }
+    form.classList.add("was-validated");
+  });
+
+  $("#preview_button").click(function() {
+    validate_isbn();
+
+    var form = $("#add_entry_form")[0];
+    if(form.checkValidity() === true) {
+      var post_url = "preview.php";
+      var request_method = "POST";
+      var form_data = $(form).serialize();
+
+      $("#spinner_modal").on("shown.bs.modal", function () {
+        $.ajax({
+          url: post_url,
+          type: request_method,
+          data: form_data,
+
+          success: function(response) {
+            hide_spinner();
+            if(is_undefined(response) == false && is_undefined(response.errmsg) == false) {
+              if(response.errmsg == "" && is_undefined(response.body) == false) {
+                show_preview_modal(response.body);
               }
               else {
                 show_server_error(response.errmsg);
