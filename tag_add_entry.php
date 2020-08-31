@@ -48,6 +48,7 @@ $bm_entry->set_description($_POST['descr_input']);
 $bm_entry->set_img_file($_FILES['file_input']);
 $bm_entry->set_img_url($_POST['image_url_input']);
 $bm_entry->set_rate($_POST['selected_rating']);
+$bm_entry->set_use_star_rating($_POST['use_star_rating_input'] ?? null);
 $bm_entry->set_add_ad($_POST['add_ad_input'] ?? null);
 
 $val_error = $bm_entry->validate();

@@ -14,6 +14,7 @@ class bookmeter_entry
   private $img_file_type;
   private $img_url;
   private $rate;
+  private $use_star_rating = false;
   private $add_ad = false;
 
   public function compose_msg($counter)
@@ -24,6 +25,15 @@ class bookmeter_entry
     if(empty($this->isbn) == false)
       $isbn_row = "**ISBN:** " . $this->isbn . "\n";
 
+    $rate_out = "";
+    if($this->use_star_rating == false)
+      $rate_out = $this->rate . "/10";
+    else
+    {
+      $rate_out = str_repeat('★', $this->rate);
+      $rate_out .= str_repeat('☆', 10 - $this->rate);
+    }
+
     $app = new app_auth;
     $ad = "Wpis dodano za pomocą strony: [" . $app->get_current_base_url() . "](" . $app->get_current_base_url() . ")";
 
@@ -32,7 +42,7 @@ class bookmeter_entry
     . "**Autor:** " . $this->author . "\n"
     . "**Gatunek:** " . $this->genre . "\n"
     . $isbn_row
-    . "**Ocena:** " . $this->rate . "/10\n\n"
+    . "**Ocena:** " . $rate_out . "\n\n"
     . $this->descr . "\n\n"
     . ($this->add_ad == true ? ($ad . "\n\n") : "")
     . "#" . site_globals::$tag_name;
@@ -118,6 +128,11 @@ class bookmeter_entry
   public function set_rate($rate)
   {
     $this->rate = $rate;
+  }
+
+  public function set_use_star_rating($use_star_rating)
+  {
+    $this->use_star_rating = $use_star_rating == "on" ? true : false;
   }
 
   public function set_add_ad($add_ad)

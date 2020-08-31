@@ -213,6 +213,11 @@ Csrf::removeToken('index');
         </div>
       </div>
 
+      <div class="custom-control custom-checkbox mb-1">
+        <input id="use_star_rating_input" type="checkbox" name="use_star_rating_input" class="form-control custom-control-input">
+        <label class="custom-control-label" for="use_star_rating_input">Ocena w postaci gwiazdek</label>
+      </div>
+
       <div class="custom-control custom-checkbox mb-3">
         <input id="add_ad_input" type="checkbox" name="add_ad_input" class="form-control custom-control-input">
         <label class="custom-control-label" for="add_ad_input">Dołącz informację o tej stronie</label>
