@@ -2,7 +2,6 @@
 
 require_once 'utils/csrf.php';
 require_once 'utils/wykop_api.php';
-require_once 'utils/counter_file.php';
 require_once 'utils/bookmeter_utils.php';
 require_once 'utils/app_auth.php';
 require_once 'utils/site_globals.php';
@@ -109,13 +108,8 @@ if(isset($login_result->content['error']['message_pl']) && $login_result->conten
 $userkey = $login_result->content['data']['userkey'];
 error_if_empty($userkey, 'brak userkey');
 
-$counter = new counter_file;
-$bm = new bookmeter_utils;
-$predicted_counter = $counter->get_counter_value();
-$api_counter = $bm->get_api_counter(site_globals::$tag_name);
-if($api_counter > $predicted_counter)
-  $predicted_counter = $api_counter;
-
+$bmu = new bookmeter_utils;
+$predicted_counter = $bmu->get_counter(site_globals::$tag_name);
 $predicted_counter_start = $predicted_counter;
 $predicted_counter++;
 $append_ad = $add_ad_input == 'on' ? true : false;
@@ -145,7 +139,7 @@ if($add_res->errmsg_curl != '')
 if(isset($add_res->content['error']['message_pl']) && $add_res->content['error']['message_pl'] != '')
   error_response($add_res->content['error']['message_pl']);
 
-$counter->set_counter_value($predicted_counter);
+$bmu->set_counter($predicted_counter);
 
 Csrf::removeToken('index');
 
