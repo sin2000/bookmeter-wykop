@@ -6,6 +6,8 @@ require_once 'utils/bookmeter_utils.php';
 require_once 'utils/app_auth.php';
 require_once 'utils/site_globals.php';
 require_once 'utils/bookmeter_entry.php';
+require_once 'utils/user_log_file.php';
+require_once 'utils/error_log_file.php';
 use steveclifton\phpcsrftokens\Csrf;
 
 session_start();
@@ -26,6 +28,8 @@ function success_response()
 
 function error_response($errmsg)
 {
+  error_log_file::append('tag_add_entry error_response: ' . $errmsg);
+
   $response = new stdClass;
   $response->errmsg = htmlspecialchars($errmsg);
   header('Content-Type: application/json; charset=UTF-8');
@@ -79,6 +83,9 @@ if(isset($add_res->content['error']['message_pl']) && $add_res->content['error']
 
 $bmu->set_counter($predicted_counter);
 
+user_log_file::append($app->get_session_login_name() . ' counter: ' . $predicted_counter);
+
+//$bm_entry->save_settings();
 Csrf::removeToken('index');
 
 success_response();
