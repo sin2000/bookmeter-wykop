@@ -7,17 +7,17 @@ session_start();
 
 $auth_id = $_GET["id"] ?? null;
 $connect_data = json_decode(base64_decode($_GET["connectData"] ?? null));
-$has_connect_data = isset($connect_data->appkey) && isset($connect_data->login)
-  && isset($connect_data->token) && isset($connect_data->sign) && isset($auth_id);
+$has_connect_data = !empty($connect_data->appkey) && !empty($connect_data->login)
+  && !empty($connect_data->token) && !empty($connect_data->sign) && !empty($auth_id);
 
 $app = new app_auth;
 $wapi = new wykop_api;
 if($has_connect_data && $connect_data->appkey == $wapi->get_appkey() && $auth_id == $app->get_auth_id())
 {
   $sign_calc = md5($wapi->get_appsecret() . $connect_data->appkey . $connect_data->login . $connect_data->token);
-  if($sign_calc == $connect_data->sign)
+  if(hash_equals($sign_calc, $connect_data->sign))
   {
-    $app->remove_auth_id_cookie();
+    $app->remove_auth_id_from_session();
     $app->set_auth_cookies($connect_data->login, $connect_data->token);
     $app->set_auth_to_session($connect_data->login, $connect_data->token);
     $app->redirect($app->get_current_base_url());

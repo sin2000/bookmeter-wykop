@@ -7,18 +7,16 @@ class app_auth
 {
   private $cookie_login_key = 'autha';
   private $cookie_token_key = 'authb';
-  private $cookiename_auth_id = 'app_auth_id';
+  private $sessionkey_auth_id = 'app_auth_id';
   private $login_redirect_page = 'login.php';
   private $login_name_cipher_key_b64;
   private $token_cipher_key_b64;
-  private $auth_id_cipher_key_b64;
   private $cipher_method = 'aes-256-gcm';
 
   public function __construct()
   {
     $this->login_name_cipher_key_b64 = confidential_vars::$login_name_cipher_key_b64;
     $this->token_cipher_key_b64 = confidential_vars::$token_cipher_key_b64;
-    $this->auth_id_cipher_key_b64 = confidential_vars::$auth_id_cipher_key_b64;
   } 
 
   public function redirect_to_login()
@@ -44,37 +42,31 @@ class app_auth
   {
     unset($_SESSION['login_name']);
     unset($_SESSION['login_token']);
+    $this->remove_auth_id_from_session();
 
     setcookie($this->cookie_login_key, '', time() - 3600, '', '', true, true);
     setcookie($this->cookie_token_key, '', time() - 3600, '', '', true, true);
-    $this->remove_auth_id_cookie();
   }
 
   public function get_auth_id()
   {
-    if(empty($_COOKIE[$this->cookiename_auth_id]) == false)
-    {
-      $enc = $_COOKIE[$this->cookiename_auth_id];
-      $dec = $this->decrypt_data($enc, $this->auth_id_cipher_key_b64);
-      return $dec;
-    }
+    if(empty($_SESSION[$this->sessionkey_auth_id]) == false)
+      return $_SESSION[$this->sessionkey_auth_id];
 
     return '';
   }
 
-  public function remove_auth_id_cookie()
+  public function remove_auth_id_from_session()
   {
-    setcookie($this->cookiename_auth_id, '', time() - 3600, '', '', true, true);
+    unset($_SESSION[$this->sessionkey_auth_id]);
   }
 
   private function generate_auth_id()
   {
     $len = random_int(33, 43);
-    $auth_id = base64_encode(random_bytes($len));
-    $enc_auth_id = $this->encrypt_data($auth_id, $this->auth_id_cipher_key_b64);
+    $auth_id = bin2hex(random_bytes($len));
     
-    $ten_mins = time() + (10 * 60);
-    setcookie($this->cookiename_auth_id, $enc_auth_id, $ten_mins, '', '', true, true);
+    $_SESSION[$this->sessionkey_auth_id] = $auth_id;
 
     return $auth_id;
   }
