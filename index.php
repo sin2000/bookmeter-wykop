@@ -3,6 +3,8 @@
 require_once 'utils/app_auth.php';
 require_once 'utils/csrf.php';
 require_once 'utils/site_globals.php';
+require_once 'utils/bookmeter_entry.php';
+
 use steveclifton\phpcsrftokens\Csrf;
 
 session_start();
@@ -11,6 +13,11 @@ $app = new app_auth;
 $app->redirect_to_login();
 $login_name = htmlspecialchars($app->get_session_login_name());
 Csrf::removeToken('index');
+$book_entry = new bookmeter_entry;
+$book_entry->load_settings();
+$star_rating_check_value = $book_entry->get_use_star_rating() ? "checked" : "";
+$add_ad_check_value = $book_entry->get_add_ad() ? "checked" : "";
+$additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
 
 ?>
 
@@ -21,8 +28,10 @@ Csrf::removeToken('index');
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="./css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/jquery-ui.min.css" />
+  <link rel="stylesheet" href="./css/jquery-ui.theme.min.css" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/main.css?v=2" />
   <title>bookmeter</title>
 </head>
 
@@ -148,6 +157,16 @@ Csrf::removeToken('index');
         </div>
       </div>
 
+      <div class="form-row">
+        <div class="col-md mb-4">
+          <label for="tags_input">Dodatkowe tagi</label>
+          <input id="tags_input" type="text" name="tags_input" class="form-control" maxlength="1500" value="<?php echo $additional_tags_value ?>">
+          <div class="invalid-tooltip">
+            Nieprawidłowe tagi. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znak #
+          </div>
+        </div>
+      </div>
+
       <div class="form-row align-items-center">
         <div class="col mb-3">
           <div class="custom-file">
@@ -214,12 +233,12 @@ Csrf::removeToken('index');
       </div>
 
       <div class="custom-control custom-checkbox mb-1">
-        <input id="use_star_rating_input" type="checkbox" name="use_star_rating_input" class="form-control custom-control-input">
+        <input id="use_star_rating_input" type="checkbox" name="use_star_rating_input" class="form-control custom-control-input" <?php echo $star_rating_check_value ?>>
         <label class="custom-control-label" for="use_star_rating_input">Ocena w postaci gwiazdek</label>
       </div>
 
       <div class="custom-control custom-checkbox mb-3">
-        <input id="add_ad_input" type="checkbox" name="add_ad_input" class="form-control custom-control-input">
+        <input id="add_ad_input" type="checkbox" name="add_ad_input" class="form-control custom-control-input" <?php echo $add_ad_check_value ?>>
         <label class="custom-control-label" for="add_ad_input">Dołącz informację o tej stronie</label>
       </div>
 
@@ -241,11 +260,11 @@ Csrf::removeToken('index');
 
   </div>
 
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="./js/jquery-3.5.1.min.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=3" type="text/javascript"></script>
+  <script src="./js/main.js?v=4" type="text/javascript"></script>
 </body>
 
 </html>

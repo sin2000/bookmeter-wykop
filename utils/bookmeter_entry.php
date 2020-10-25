@@ -10,12 +10,17 @@ class bookmeter_entry
   private $genre;
   private $isbn;
   private $descr;
+  private $additional_tags;
   private $img_file;
   private $img_file_type;
   private $img_url;
   private $rate;
   private $use_star_rating = false;
   private $add_ad = false;
+
+  private $setting_additional_tags_key = 'setting_additional_tags';
+  private $setting_use_star_rating_key = 'setting_use_star_rating';
+  private $setting_add_ad_key = 'setting_add_ad';
 
   public function compose_msg($counter)
   {
@@ -36,6 +41,7 @@ class bookmeter_entry
 
     $app = new app_auth;
     $ad = "Wpis dodano za pomocą strony: [" . $app->get_current_base_url() . "](" . $app->get_current_base_url() . ")";
+    $more_tags = empty($this->additional_tags) ? '' : ' ' . $this->additional_tags;
 
     $body = $prev_counter . " + 1 = " . $counter . "\n\n"
     . "**Tytuł:** " . $this->title . "\n"
@@ -45,7 +51,7 @@ class bookmeter_entry
     . "**Ocena:** " . $rate_out . "\n\n"
     . $this->descr . "\n\n"
     . ($this->add_ad == true ? ($ad . "\n\n") : "")
-    . "#" . site_globals::$tag_name;
+    . "#" . site_globals::$tag_name . $more_tags;
 
     return $body;
   }
@@ -62,6 +68,10 @@ class bookmeter_entry
       return $err_msg;
 
     $err_msg = $this->error_if_empty($this->genre, 'gatunek jest wymagany');
+    if($err_msg != '')
+      return $err_msg;
+
+    $err_msg = $this->validate_additional_tags();
     if($err_msg != '')
       return $err_msg;
 
@@ -114,6 +124,11 @@ class bookmeter_entry
     $this->descr = trim($description);
   }
 
+  public function set_additional_tags($tags)
+  {
+    $this->additional_tags = trim($tags);
+  }
+
   public function set_img_file($img_file)
   {
     $this->img_file = $img_file;
@@ -132,12 +147,57 @@ class bookmeter_entry
 
   public function set_use_star_rating($use_star_rating)
   {
-    $this->use_star_rating = $use_star_rating == "on" ? true : false;
+    $this->use_star_rating = $use_star_rating == 'on' ? true : false;
   }
 
   public function set_add_ad($add_ad)
   {
-    $this->add_ad = $add_ad == "on" ? true : false;
+    $this->add_ad = $add_ad == 'on' ? true : false;
+  }
+
+  public function get_additional_tags()
+  {
+    return $this->additional_tags;
+  }
+
+  public function get_use_star_rating()
+  {
+    return $this->use_star_rating;
+  }
+
+  public function get_add_ad()
+  {
+    return $this->add_ad;
+  }
+
+  public function save_settings()
+  {
+    $year = time() + (1 * 365 * 24 * 60 * 60);
+    setcookie($this->setting_additional_tags_key, $this->additional_tags, $year, '', '', true, true);
+    setcookie($this->setting_use_star_rating_key, $this->use_star_rating, $year, '', '', true, true);
+    setcookie($this->setting_add_ad_key, $this->add_ad, $year, '', '', true, true);
+  }
+
+  public function load_settings()
+  {
+    if(empty($_COOKIE[$this->setting_additional_tags_key]) == false)
+    {
+      $this->additional_tags = trim($_COOKIE[$this->setting_additional_tags_key]);
+      if($this->validate_additional_tags() != '')
+        $this->additional_tags = '';
+    }
+
+    if(empty($_COOKIE[$this->setting_use_star_rating_key]) == false)
+    {
+      $this->use_star_rating = $_COOKIE[$this->setting_use_star_rating_key];
+      $this->use_star_rating = $this->use_star_rating == '1' ? true : false;
+    }
+
+    if(empty($_COOKIE[$this->setting_add_ad_key]) == false)
+    {
+      $this->add_ad = $_COOKIE[$this->setting_add_ad_key];
+      $this->add_ad = $this->add_ad == '1' ? true : false;
+    }
   }
 
   private function validate_img_file()
@@ -168,6 +228,20 @@ class bookmeter_entry
       if($this->img_file_type != 'image/jpeg' && $this->img_file_type != 'image/png')
         return 'dozwolone typy plików to JPG i PNG';
     }
+
+    return '';
+  }
+
+  private function validate_additional_tags()
+  {
+    if(empty($this->additional_tags))
+      return '';
+
+    if(strlen($this->additional_tags) > 1500)
+      return 'dodatkowe tagi mogą zawierać maksymalnie 1500 znaków';
+
+    if(preg_match('/^[a-zA-Z0-9 #]*$/', $this->additional_tags) == false)
+      return 'nieprawidłowe tagi. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znak #';
 
     return '';
   }

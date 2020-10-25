@@ -33,6 +33,14 @@ class wykop_api
     return json_decode($content, true);
   }
 
+  public function tag_suggest($tag_name)
+  {
+    $res = $this->curl($this->base_api_url . '/Suggest/Tags/' . $tag_name . '/appkey/' . $this->readonly_appkey);
+
+    $content = $res['content'] ?? '';
+    return json_decode($content, true);
+  }
+
   public function login_index($login, $password_or_token)
   {
     $post_data = array(

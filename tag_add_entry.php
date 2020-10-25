@@ -13,6 +13,8 @@ use steveclifton\phpcsrftokens\Csrf;
 session_start();
 if(Csrf::verifyToken('index') == false)
 {
+  error_log_file::append('tag_add_entry 404response - csrf verify failed');
+
   http_response_code(404);
   return;
 }
@@ -49,6 +51,7 @@ $bm_entry->set_author($_POST['author_input']);
 $bm_entry->set_genre($_POST['genre_input']);
 $bm_entry->set_isbn($_POST['isbn_input']);
 $bm_entry->set_description($_POST['descr_input']);
+$bm_entry->set_additional_tags($_POST['tags_input']);
 $bm_entry->set_img_file($_FILES['file_input']);
 $bm_entry->set_img_url($_POST['image_url_input']);
 $bm_entry->set_rate($_POST['selected_rating']);
@@ -85,7 +88,7 @@ $bmu->set_counter($predicted_counter);
 
 user_log_file::append($app->get_session_login_name() . ' counter: ' . $predicted_counter);
 
-//$bm_entry->save_settings();
+$bm_entry->save_settings();
 Csrf::removeToken('index');
 
 success_response();

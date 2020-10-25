@@ -83,3 +83,7 @@ input[type=file]::-webkit-file-upload-button {
    margin: 0;
    float: right;
 }
+
+.ui-autocomplete-loading {
+  background: white url("../img/loading.gif") 99% center no-repeat !important;
+}
