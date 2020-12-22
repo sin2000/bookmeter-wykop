@@ -10,7 +10,7 @@ class log_file
   {
     $ext = ".log";
     $this->log_filepath = $filepath_wo_ext . $ext;
-    $this->backup_log_filepath = $this->log_filepath . '_1' . $ext;
+    $this->backup_log_filepath = $filepath_wo_ext . '_1' . $ext;
   }
 
   public function log_append($line)
