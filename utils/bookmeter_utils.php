@@ -14,7 +14,25 @@ class bookmeter_utils
     $jdata = $wapi->tag_entries($tag_name);
 
     $wdata = $jdata['data'] ?? null;
-    $api_counter = $this->get_counter_from_entries($wdata, $counter_in_file);
+    $api_counter = -1;
+
+    $curr_date = new DateTime();
+    $new_edition_min_date = new DateTime('2021-01-01');
+    $new_edition_max_date = new DateTime('2021-01-06');
+    if($curr_date >= $new_edition_min_date && $curr_date <= $new_edition_max_date)
+    {
+      $max_counter = 300;
+      if($counter_in_file > $max_counter)
+        $counter_in_file = 0;
+
+      $api_counter = $this->get_counter_from_entries($wdata, $counter_in_file);
+      if($api_counter > $max_counter)
+        $api_counter = 0;
+    }
+    else
+    {
+      $api_counter = $this->get_counter_from_entries($wdata, $counter_in_file);
+    }
 
     $counter = $counter_in_file > $api_counter ? $counter_in_file : $api_counter;
 
