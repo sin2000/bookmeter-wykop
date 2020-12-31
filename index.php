@@ -111,6 +111,7 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
             <span class="sr-only">Loading...</span>
           </div>
           <span class="font-weight-bold align-middle" id="book_counter_input"></span>
+          <span class="align-middle small">(<a href="stats">statystyki</a>)</span>
         </div>
       </div>
       <div class="form-row">

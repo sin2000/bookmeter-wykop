@@ -8,3 +8,5 @@ vsc_workspace.code-workspace
 utils/confidential_vars.php
 /unit_tests/
 counter.txt
+/data/
+/logs/
