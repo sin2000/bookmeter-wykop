@@ -67,7 +67,7 @@ if($datafile_time !== false)
                 <th>Tytuł</th>
                 <th>Gatunek</th>
                 <th>Ocena</th>
-                <!-- <th>Plusy</th> -->
+                <th>Plusy</th>
             </tr>
         </thead>
         <tfoot>
@@ -80,7 +80,7 @@ if($datafile_time !== false)
                 <th>Tytuł</th>
                 <th>Gatunek</th>
                 <th>Ocena</th>
-                <!-- <th>Plusy</th> -->
+                <th>Plusy</th>
             </tr>
         </tfoot>
     </table>
