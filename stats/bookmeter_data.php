@@ -1,7 +1,16 @@
 <?php
 
+require_once 'utils/stats_utils.php';
+
+$edition = $_GET["edition"] ?? null;
+$statu = new stats_utils($edition);
+$filepath = $statu->get_bookmeter_csv_filepath();
+
+if($filepath == '')
+  exit;
+
 $data_arr = [];
-if(($handle = fopen('../data/bookmeter.csv', 'r')) !== FALSE)
+if(($handle = fopen($filepath, 'r')) !== FALSE)
 {
   $first_row = true;
   while(($data = fgetcsv($handle)) !== FALSE)

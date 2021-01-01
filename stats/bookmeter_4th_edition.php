@@ -8,7 +8,7 @@ require_once 'utils/stats_utils.php';
 $app = new app_auth;
 $base_url = $app->get_current_base_url();
 
-$statu = new stats_utils(stats_utils::bm_actual_edition);
+$statu = new stats_utils(stats_utils::bm_edition_4);
 $curr_edition = $statu->get_current_edition();
 $curr_edition = htmlspecialchars($curr_edition);
 
@@ -46,7 +46,7 @@ $undetected_filepath = $statu->get_undetected_filepath();
     </div>
     <div class="row">
         <div class="col-auto align-self-center">
-            <b>Statystyki - V edycja Bookmeter</b> od <?php echo $edition_start_date ?> do <?php echo $end_time ?>
+            <b>Statystyki - IV edycja Bookmeter</b> od <?php echo $edition_start_date ?> do <?php echo $end_time ?>
         </div>
     </div>
 
@@ -58,7 +58,7 @@ $undetected_filepath = $statu->get_undetected_filepath();
         -
         <a href="<?php echo $base_url ?>">Dodaj wpis</a>
         -
-        <b><a href="bookmeter_4th_edition.php">IV edycja</a></b>
+        <b><a href="index.php">V edycja</a></b>
       </div>
     </div>
 

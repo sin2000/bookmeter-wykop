@@ -1,4 +1,6 @@
 $(document).ready(function () {
+  var bm_edition = $("#bm_edition").html();
+
   $("#bookmeter_grid tfoot th").each(function() {
     $(this).html('<input type="text" placeholder="Szukaj" />');
   });
@@ -12,8 +14,12 @@ $(document).ready(function () {
     },
     ajax: {
       url: "bookmeter_data.php",
+      data: { "edition" : bm_edition },
       dataSrc: ""
     },
+    order: [
+      [ 1, "desc" ]
+    ],
     createdRow: function(row, data, dataIndex, cells) {
       $(cells[0]).html('<a href="https://www.wykop.pl/wpis/' + data[0] + '" target="_blank" title="Otwórz wpis">' + data[0] + '</a>');
       var color = "deeppink";
@@ -24,7 +30,6 @@ $(document).ready(function () {
     },
     columnDefs: [
       { "width": "30%", "targets": [ 4, 5 ] }
-      // { "type": "num", "targets": 7 }
     ],
 
     initComplete: function () {
