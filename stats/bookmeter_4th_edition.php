@@ -1,12 +1,12 @@
 <?php
 
 require_once '../utils/site_globals.php';
-require_once '../utils/app_auth.php';
+//require_once '../utils/app_auth.php';
 require_once 'utils/stats_utils.php';
 
 //session_start();
-$app = new app_auth;
-$base_url = $app->get_current_base_url();
+//$app = new app_auth;
+$base_url = "https://bookmeter.ct8.pl";
 
 $statu = new stats_utils(stats_utils::bm_edition_4);
 $curr_edition = $statu->get_current_edition();
