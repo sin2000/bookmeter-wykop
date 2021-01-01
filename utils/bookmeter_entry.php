@@ -222,8 +222,8 @@ class bookmeter_entry
         return $file_up_errors[$this->img_file['error']];
 
       $file_size = $this->img_file['size'];
-      if($file_size > (3 * 1024 * 1024))
-        return 'maksymalna wielkość pliku to 3 MB';
+      if($file_size > (5 * 1024 * 1024))
+        return 'maksymalna wielkość pliku to 5 MB';
 
       if($this->img_file_type != 'image/jpeg' && $this->img_file_type != 'image/png')
         return 'dozwolone typy plików to JPG i PNG';
