@@ -67,7 +67,7 @@ class wykop_api
     if($embed != null)
       $post_data['embed'] = $embed;
 
-    $res = $this->curl($this->base_api_url . '/Entries/Add/appkey/' . $this->appkey . '/userkey/' . $userkey, $post_data);
+    $res = $this->curl($this->base_api_url . '/Entries/Add/appkey/' . $this->appkey . '/userkey/' . $userkey, $post_data, 120);
 
     $res_obj = new stdClass;
     $content = $res['content'] ?? '';
@@ -85,7 +85,7 @@ class wykop_api
     return $this->base_api_url . '/login/connect/appkey/' . $this->appkey . '/redirect/' . $redir . '/secure/' . $secure;
   }
 
-  private function curl($url, $post_array = null)
+  private function curl($url, $post_array = null, $timeout = 30)
   {
     $options = array(
       CURLOPT_RETURNTRANSFER     => true,
@@ -93,7 +93,7 @@ class wykop_api
       CURLOPT_USERAGENT          => 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0',
       CURLOPT_AUTOREFERER        => true,
       CURLOPT_CONNECTTIMEOUT     => 15,
-      CURLOPT_TIMEOUT            => 15,
+      CURLOPT_TIMEOUT            => $timeout,
       CURLOPT_MAXREDIRS          => 3
     );
 

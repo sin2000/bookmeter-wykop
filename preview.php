@@ -40,6 +40,7 @@ $bm_entry->set_isbn($_POST['isbn_input']);
 $bm_entry->set_description($_POST['descr_input']);
 $bm_entry->set_additional_tags($_POST['tags_input']);
 $bm_entry->set_rate($_POST['selected_rating']);
+$bm_entry->set_bold_labels($_POST['bold_labels_input'] ?? null);
 $bm_entry->set_use_star_rating($_POST['use_star_rating_input'] ?? null);
 $bm_entry->set_add_ad($_POST['add_ad_input'] ?? null);
 
@@ -52,6 +53,8 @@ $predicted_counter = $bmu->get_counter(site_globals::$tag_name) + 1;
 $body = $bm_entry->compose_msg($predicted_counter);
 $body = htmlspecialchars($body);
 $body = nl2br($body);
+
+$bm_entry->save_settings();
 
 success_response($body);
 

@@ -15,10 +15,12 @@ class bookmeter_entry
   private $img_file_type;
   private $img_url;
   private $rate;
+  private $bold_labels = true;
   private $use_star_rating = false;
   private $add_ad = false;
 
   private $setting_additional_tags_key = 'setting_additional_tags';
+  private $setting_bold_labels_key = 'setting_bold_labels';
   private $setting_use_star_rating_key = 'setting_use_star_rating';
   private $setting_add_ad_key = 'setting_add_ad';
 
@@ -28,11 +30,11 @@ class bookmeter_entry
 
     $isbn_row = '';
     if(empty($this->isbn) == false)
-      $isbn_row = "**ISBN:** " . $this->isbn . "\n";
+      $isbn_row = $this->format_label('ISBN:') . $this->isbn . "\n";
 
-    $rate_out = "";
+    $rate_out = '';
     if($this->use_star_rating == false)
-      $rate_out = $this->rate . "/10";
+      $rate_out = $this->rate . '/10';
     else
     {
       $rate_out = str_repeat('★', $this->rate);
@@ -40,15 +42,15 @@ class bookmeter_entry
     }
 
     $app = new app_auth;
-    $ad = "Wpis dodano za pomocą strony: [" . $app->get_current_base_url() . "](" . $app->get_current_base_url() . ")";
+    $ad = 'Wpis dodano za pomocą strony: [' . $app->get_current_base_url() . '](' . $app->get_current_base_url() . ')';
     $more_tags = empty($this->additional_tags) ? '' : ' ' . $this->additional_tags;
 
     $body = $prev_counter . " + 1 = " . $counter . "\n\n"
-    . "**Tytuł:** " . $this->title . "\n"
-    . "**Autor:** " . $this->author . "\n"
-    . "**Gatunek:** " . $this->genre . "\n"
+    . $this->format_label('Tytuł:') . $this->title . "\n"
+    . $this->format_label('Autor:') . $this->author . "\n"
+    . $this->format_label('Gatunek:') . $this->genre . "\n"
     . $isbn_row
-    . "**Ocena:** " . $rate_out . "\n\n"
+    . $this->format_label('Ocena:') . $rate_out . "\n\n"
     . $this->descr . "\n\n"
     . ($this->add_ad == true ? ($ad . "\n\n") : "")
     . "#" . site_globals::$tag_name . $more_tags;
@@ -101,32 +103,32 @@ class bookmeter_entry
 
   public function set_title($title)
   {
-    $this->title = trim($title);
+    $this->title = $this->strip_unsafe_chars(trim($title));
   }
   
   public function set_author($author)
   {
-    $this->author = trim($author);
+    $this->author = $this->strip_unsafe_chars(trim($author));
   }
 
   public function set_genre($genre)
   {
-    $this->genre = trim($genre);
+    $this->genre = $this->strip_unsafe_chars(trim($genre));
   }
 
   public function set_isbn($isbn)
   {
-    $this->isbn = trim($isbn);
+    $this->isbn = $this->strip_unsafe_chars(trim($isbn));
   }
 
   public function set_description($description)
   {
-    $this->descr = trim($description);
+    $this->descr = $this->strip_unsafe_chars(trim($description));
   }
 
   public function set_additional_tags($tags)
   {
-    $this->additional_tags = trim($tags);
+    $this->additional_tags = $this->strip_unsafe_chars(trim($tags));
   }
 
   public function set_img_file($img_file)
@@ -137,12 +139,17 @@ class bookmeter_entry
 
   public function set_img_url($img_url)
   {
-    $this->img_url = trim($img_url);
+    $this->img_url = $this->strip_unsafe_chars(trim($img_url));
   }
 
   public function set_rate($rate)
   {
-    $this->rate = $rate;
+    $this->rate = $this->strip_unsafe_chars($rate);
+  }
+
+  public function set_bold_labels($bold_labels)
+  {
+    $this->bold_labels = $bold_labels == 'on' ? true : false;
   }
 
   public function set_use_star_rating($use_star_rating)
@@ -160,6 +167,11 @@ class bookmeter_entry
     return $this->additional_tags;
   }
 
+  public function get_bold_labels()
+  {
+    return $this->bold_labels;
+  }
+
   public function get_use_star_rating()
   {
     return $this->use_star_rating;
@@ -174,6 +186,7 @@ class bookmeter_entry
   {
     $year = time() + (1 * 365 * 24 * 60 * 60);
     setcookie($this->setting_additional_tags_key, $this->additional_tags, $year, '', '', true, true);
+    setcookie($this->setting_bold_labels_key, $this->bold_labels == true ? 1 : 0, $year, '', '', true, true);
     setcookie($this->setting_use_star_rating_key, $this->use_star_rating, $year, '', '', true, true);
     setcookie($this->setting_add_ad_key, $this->add_ad, $year, '', '', true, true);
   }
@@ -185,6 +198,12 @@ class bookmeter_entry
       $this->additional_tags = trim($_COOKIE[$this->setting_additional_tags_key]);
       if($this->validate_additional_tags() != '')
         $this->additional_tags = '';
+    }
+
+    if(isset($_COOKIE[$this->setting_bold_labels_key]))
+    {
+      $this->bold_labels = $_COOKIE[$this->setting_bold_labels_key];
+      $this->bold_labels = $this->bold_labels == '1' ? true : false;
     }
 
     if(empty($_COOKIE[$this->setting_use_star_rating_key]) == false)
@@ -200,11 +219,23 @@ class bookmeter_entry
     }
   }
 
+  private function format_label($label_text)
+  {
+    if($this->bold_labels)
+      return '**' . $label_text . '** ';
+
+    return $label_text . ' ';
+  }
+
   private function validate_img_file()
   {
+    $max_file_size_mb = 5;
+    $max_size_errmsg = 'maksymalna wielkość pliku z obrazkiem to '. $max_file_size_mb . ' MB';
+
     $file_up_errors = array(
       0 => 'There is no error, the file uploaded with success',
-      1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+      //1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
+      1 => $max_size_errmsg,
       2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
       3 => 'The uploaded file was only partially uploaded',
       4 => 'No file was uploaded',
@@ -222,8 +253,8 @@ class bookmeter_entry
         return $file_up_errors[$this->img_file['error']];
 
       $file_size = $this->img_file['size'];
-      if($file_size > (5 * 1024 * 1024))
-        return 'maksymalna wielkość pliku to 5 MB';
+      if($file_size > ($max_file_size_mb * 1024 * 1024))
+        return $max_size_errmsg;
 
       if($this->img_file_type != 'image/jpeg' && $this->img_file_type != 'image/png')
         return 'dozwolone typy plików to JPG i PNG';
@@ -260,6 +291,11 @@ class bookmeter_entry
       return $errmsg;
 
     return '';
+  }
+
+  private function strip_unsafe_chars($str)
+  {
+    return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $str);
   }
 }
 

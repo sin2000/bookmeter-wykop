@@ -15,6 +15,7 @@ $login_name = htmlspecialchars($app->get_session_login_name());
 Csrf::removeToken('index');
 $book_entry = new bookmeter_entry;
 $book_entry->load_settings();
+$bold_labels_check_value = $book_entry->get_bold_labels() ? "checked" : "";
 $star_rating_check_value = $book_entry->get_use_star_rating() ? "checked" : "";
 $add_ad_check_value = $book_entry->get_add_ad() ? "checked" : "";
 $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
@@ -231,6 +232,11 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
         <div class="col-md font-weight-bold">
           Ocena: <span class="selected-rating">0</span><small>/10</small>
         </div>
+      </div>
+
+      <div class="custom-control custom-checkbox mb-1">
+        <input id="bold_labels_input" type="checkbox" name="bold_labels_input" class="form-control custom-control-input" <?php echo $bold_labels_check_value ?>>
+        <label class="custom-control-label" for="bold_labels_input">Pogrubiaj etykiety</label>
       </div>
 
       <div class="custom-control custom-checkbox mb-1">

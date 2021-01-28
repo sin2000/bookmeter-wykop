@@ -28,8 +28,11 @@ function success_response()
   exit;
 }
 
-function error_response($errmsg)
+function error_response($errmsg, $origin = '')
 {
+  if($origin != '')
+    $errmsg = '[' . $origin . ']' . $errmsg;
+
   error_log_file::append('tag_add_entry error_response: ' . $errmsg);
 
   $response = new stdClass;
@@ -55,6 +58,7 @@ $bm_entry->set_additional_tags($_POST['tags_input']);
 $bm_entry->set_img_file($_FILES['file_input']);
 $bm_entry->set_img_url($_POST['image_url_input']);
 $bm_entry->set_rate($_POST['selected_rating']);
+$bm_entry->set_bold_labels($_POST['bold_labels_input'] ?? null);
 $bm_entry->set_use_star_rating($_POST['use_star_rating_input'] ?? null);
 $bm_entry->set_add_ad($_POST['add_ad_input'] ?? null);
 
@@ -66,9 +70,9 @@ $app = new app_auth;
 $wapi = new wykop_api;
 $login_result = $wapi->login_index($app->get_session_login_name(), $app->get_session_token());
 if($login_result->errmsg_curl != '')
-  error_response($login_result->errmsg_curl);
+  error_response($login_result->errmsg_curl, 'wykopapi');
 if(isset($login_result->content['error']['message_pl']) && $login_result->content['error']['message_pl'] != '')
-  error_response($login_result->content['error']['message_pl']);
+  error_response($login_result->content['error']['message_pl'], 'wykopapi');
 
 $userkey = $login_result->content['data']['userkey'];
 error_if_empty($userkey, 'brak userkey');
@@ -80,9 +84,9 @@ $embed = $bm_entry->get_img();
 
 $add_res = $wapi->add_entry($userkey, $body, $embed);
 if($add_res->errmsg_curl != '')
-  error_response($add_res->errmsg_curl);
+  error_response($add_res->errmsg_curl, 'wykopapi');
 if(isset($add_res->content['error']['message_pl']) && $add_res->content['error']['message_pl'] != '')
-  error_response($add_res->content['error']['message_pl']);
+  error_response($add_res->content['error']['message_pl'], 'wykopapi');
 
 $bmu->set_counter($predicted_counter);
 
