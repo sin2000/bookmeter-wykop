@@ -113,6 +113,17 @@
     }
   }
 
+  function validate_genre() {
+    var elem = $("#genre_input");
+    var selected_genre = $("#genre_select_input").val();
+    if(elem.val() == "" && selected_genre == "inny...") {
+      elem[0].setCustomValidity("bad genre");
+    }
+    else {
+      elem[0].setCustomValidity("");
+    }
+  }
+
   function get_internal_counter() {
 
     $.ajax({
@@ -231,6 +242,7 @@
   $("#add_entry_form").submit(function(event) {
     event.preventDefault();
 
+    validate_genre();
     validate_isbn();
     validate_optional_tags();
 
@@ -277,6 +289,7 @@
   });
 
   $("#preview_button").click(function() {
+    validate_genre();
     validate_isbn();
     validate_optional_tags();
 
@@ -318,6 +331,19 @@
     }
     form.classList.add("was-validated");
   });
+
+  $("#genre_select_input").change(function(){
+    var val = $(this).val();
+    var add_genre_input = $("#genre_input");
+    if(val == "inny...") {
+      add_genre_input.removeClass("d-none");
+      add_genre_input.focus();
+    }
+    else {
+      add_genre_input.addClass("d-none");
+      add_genre_input[0].setCustomValidity("");
+    }
+  });
   
   window.addEventListener("load", function() {
 
@@ -325,6 +351,10 @@
       var fileName = document.getElementById("file_input").files[0].name;
       var nextSibling = e.target.nextElementSibling
       nextSibling.innerText = fileName
+    });
+
+    $("#genre_input").on("blur", function() {
+      validate_genre();
     });
 
     $("#isbn_input").on("blur", function() {

@@ -20,7 +20,7 @@ $base_url = $app->get_current_base_url();
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="stylesheet" href="./css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/bootstrap.min.css?v=2" />
   <link rel="stylesheet" href="./css/main.css" />
   <title>bookmeter</title>
 </head>
@@ -44,7 +44,7 @@ $base_url = $app->get_current_base_url();
 
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="./js/jquery-3.5.1.min.js"></script>
-  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="./js/bootstrap.bundle.min.js?v=2"></script>
 </body>
 
 </html>

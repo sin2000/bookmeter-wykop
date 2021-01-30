@@ -15,10 +15,12 @@ class bookmeter_entry
   private $img_file_type;
   private $img_url;
   private $rate;
+  private $save_additional_tags = true;
   private $bold_labels = true;
   private $use_star_rating = false;
   private $add_ad = false;
 
+  private $setting_save_additional_tags_key = 'setting_save_additional_tags';
   private $setting_additional_tags_key = 'setting_additional_tags';
   private $setting_bold_labels_key = 'setting_bold_labels';
   private $setting_use_star_rating_key = 'setting_use_star_rating';
@@ -43,7 +45,8 @@ class bookmeter_entry
 
     $app = new app_auth;
     $ad = 'Wpis dodano za pomocą strony: [' . $app->get_current_base_url() . '](' . $app->get_current_base_url() . ')';
-    $more_tags = empty($this->additional_tags) ? '' : ' ' . $this->additional_tags;
+    $atags = $this->get_additional_tags();
+    $more_tags = empty($atags) ? '' : ' ' . $atags;
 
     $body = $prev_counter . " + 1 = " . $counter . "\n\n"
     . $this->format_label('Tytuł:') . $this->title . "\n"
@@ -111,9 +114,11 @@ class bookmeter_entry
     $this->author = $this->strip_unsafe_chars(trim($author));
   }
 
-  public function set_genre($genre)
+  public function set_genre($selected_genre, $genre_from_input)
   {
-    $this->genre = $this->strip_unsafe_chars(trim($genre));
+    $genre_tmp = $selected_genre == "inny..." ? $genre_from_input : $selected_genre;
+
+    $this->genre = $this->strip_unsafe_chars(trim($genre_tmp));
   }
 
   public function set_isbn($isbn)
@@ -124,6 +129,11 @@ class bookmeter_entry
   public function set_description($description)
   {
     $this->descr = $this->strip_unsafe_chars(trim($description));
+  }
+
+  public function set_save_additional_tags($save)
+  {
+    $this->save_additional_tags = $save == 'on' ? true : false;
   }
 
   public function set_additional_tags($tags)
@@ -162,6 +172,11 @@ class bookmeter_entry
     $this->add_ad = $add_ad == 'on' ? true : false;
   }
 
+  public function get_save_additional_tags()
+  {
+    return $this->save_additional_tags;
+  }
+
   public function get_additional_tags()
   {
     return $this->additional_tags;
@@ -185,6 +200,7 @@ class bookmeter_entry
   public function save_settings()
   {
     $year = time() + (1 * 365 * 24 * 60 * 60);
+    setcookie($this->setting_save_additional_tags_key, $this->save_additional_tags == true ? 1 : 0, $year, '', '', true, true);
     setcookie($this->setting_additional_tags_key, $this->additional_tags, $year, '', '', true, true);
     setcookie($this->setting_bold_labels_key, $this->bold_labels == true ? 1 : 0, $year, '', '', true, true);
     setcookie($this->setting_use_star_rating_key, $this->use_star_rating, $year, '', '', true, true);
@@ -193,7 +209,12 @@ class bookmeter_entry
 
   public function load_settings()
   {
-    if(empty($_COOKIE[$this->setting_additional_tags_key]) == false)
+    if(isset($_COOKIE[$this->setting_save_additional_tags_key]))
+    {
+      $this->save_additional_tags = $_COOKIE[$this->setting_save_additional_tags_key] == '1' ? true : false;
+    }
+
+    if($this->save_additional_tags && empty($_COOKIE[$this->setting_additional_tags_key]) == false)
     {
       $this->additional_tags = trim($_COOKIE[$this->setting_additional_tags_key]);
       if($this->validate_additional_tags() != '')

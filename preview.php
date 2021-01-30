@@ -35,11 +35,12 @@ function error_response($errmsg)
 $bm_entry = new bookmeter_entry;
 $bm_entry->set_title($_POST['title_input']);
 $bm_entry->set_author($_POST['author_input']);
-$bm_entry->set_genre($_POST['genre_input']);
+$bm_entry->set_genre($_POST['genre_select_input'], $_POST['genre_input']);
 $bm_entry->set_isbn($_POST['isbn_input']);
 $bm_entry->set_description($_POST['descr_input']);
 $bm_entry->set_additional_tags($_POST['tags_input']);
 $bm_entry->set_rate($_POST['selected_rating']);
+$bm_entry->set_save_additional_tags($_POST['save_tags_input'] ?? null);
 $bm_entry->set_bold_labels($_POST['bold_labels_input'] ?? null);
 $bm_entry->set_use_star_rating($_POST['use_star_rating_input'] ?? null);
 $bm_entry->set_add_ad($_POST['add_ad_input'] ?? null);

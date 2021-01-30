@@ -15,6 +15,7 @@ $login_name = htmlspecialchars($app->get_session_login_name());
 Csrf::removeToken('index');
 $book_entry = new bookmeter_entry;
 $book_entry->load_settings();
+$save_tags_check_value = $book_entry->get_save_additional_tags() ? "checked" : "";
 $bold_labels_check_value = $book_entry->get_bold_labels() ? "checked" : "";
 $star_rating_check_value = $book_entry->get_use_star_rating() ? "checked" : "";
 $add_ad_check_value = $book_entry->get_add_ad() ? "checked" : "";
@@ -28,7 +29,7 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="stylesheet" href="./css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/bootstrap.min.css?v=2" />
   <link rel="stylesheet" href="./css/jquery-ui.min.css" />
   <link rel="stylesheet" href="./css/jquery-ui.theme.min.css" />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
@@ -135,8 +136,24 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
       </div>
       <div class="form-row">
         <div class="col-md mb-3">
-          <label for="genre_input">Gatunek</label>
-          <input id="genre_input" type="text" name="genre_input" class="form-control" required>
+          <label for="genre_select_input">Gatunek</label>
+          <select id="genre_select_input" name="genre_select_input" class="custom-select form-control" required>
+            <option selected disabled value="">wybierz...</option>
+            <option value="ekonomia">ekonomia</option>
+            <option value="fantasy">fantasy</option>
+            <option value="historyczna">historyczna</option>
+            <option value="kryminał">kryminał</option>
+            <option value="literatura piękna">literatura piękna</option>
+            <option value="reportaż">reportaż</option>
+            <option value="science fiction">science fiction</option>
+            <option value="thriller">thriller</option>
+            <option value="inny...">inny...</option>
+          </select>
+          <div class="invalid-tooltip">
+            Gatunek jest wymagany
+          </div>
+
+          <input id="genre_input" type="text" name="genre_input" class="form-control mt-2 d-none">
           <div class="invalid-tooltip">
             Gatunek jest wymagany
           </div>
@@ -160,11 +177,16 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
       </div>
 
       <div class="form-row">
-        <div class="col-md mb-4">
+        <div class="col-md mb-3">
           <label for="tags_input">Dodatkowe tagi</label>
           <input id="tags_input" type="text" name="tags_input" class="form-control" maxlength="1500" value="<?php echo $additional_tags_value ?>">
           <div class="invalid-tooltip">
             Nieprawidłowe tagi. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znak #
+          </div>
+
+          <div class="custom-control custom-checkbox mt-1 ml-1">
+            <input id="save_tags_input" type="checkbox" name="save_tags_input" class="form-control custom-control-input" <?php echo $save_tags_check_value ?>>
+            <label class="custom-control-label" for="save_tags_input"><span class="small text-secondary align-text-bottom">Zapamiętaj dodatkowe tagi</span></label>
           </div>
         </div>
       </div>
@@ -268,10 +290,10 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
   </div>
 
   <script src="./js/jquery-3.5.1.min.js"></script>
-  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=4" type="text/javascript"></script>
+  <script src="./js/main.js?v=5" type="text/javascript"></script>
 </body>
 
 </html>
