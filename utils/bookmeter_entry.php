@@ -116,7 +116,7 @@ class bookmeter_entry
 
   public function set_genre($selected_genre, $genre_from_input)
   {
-    $genre_tmp = $selected_genre == "inny..." ? $genre_from_input : $selected_genre;
+    $genre_tmp = $selected_genre == 'inny...' ? $genre_from_input : $selected_genre;
 
     $this->genre = $this->strip_unsafe_chars(trim($genre_tmp));
   }

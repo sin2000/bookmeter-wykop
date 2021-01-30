@@ -21,6 +21,25 @@ $star_rating_check_value = $book_entry->get_use_star_rating() ? "checked" : "";
 $add_ad_check_value = $book_entry->get_add_ad() ? "checked" : "";
 $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
 
+$genre_list = [
+  'ekonomia',
+  'fantasy',
+  'historyczna',
+  'horror',
+  'kryminał',
+  'literatura piękna',
+  'popularnonaukowa',
+  'reportaż',
+  'science fiction',
+  'thriller',
+];
+$genre_options = '';
+foreach($genre_list as $genre)
+{
+  $fgenre = htmlspecialchars($genre);
+  $genre_options .= '<option value="' . $fgenre . '">' . $fgenre . '</option>' . "\n";
+}
+
 ?>
 
 <!doctype html>
@@ -139,14 +158,7 @@ $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
           <label for="genre_select_input">Gatunek</label>
           <select id="genre_select_input" name="genre_select_input" class="custom-select form-control" required>
             <option selected disabled value="">wybierz...</option>
-            <option value="ekonomia">ekonomia</option>
-            <option value="fantasy">fantasy</option>
-            <option value="historyczna">historyczna</option>
-            <option value="kryminał">kryminał</option>
-            <option value="literatura piękna">literatura piękna</option>
-            <option value="reportaż">reportaż</option>
-            <option value="science fiction">science fiction</option>
-            <option value="thriller">thriller</option>
+            <?php echo $genre_options ?>
             <option value="inny...">inny...</option>
           </select>
           <div class="invalid-tooltip">
