@@ -60,7 +60,7 @@ foreach($genre_list as $genre)
   <div id="spinner_modal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog spinner_dialog">
       <div id="full_spinner" class="myspinner" role="status">
-        <span class="sr-only">Loading...</span>
+        <span class="sr-only">Ładowanie...</span>
       </div>
     </div>
   </div>
@@ -305,7 +305,7 @@ foreach($genre_list as $genre)
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=5" type="text/javascript"></script>
+  <script src="./js/main.js?v=6" type="text/javascript"></script>
 </body>
 
 </html>

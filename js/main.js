@@ -235,6 +235,36 @@
       });
   }
 
+  function load_simple_autocomplete(field_id, remote_url, min_length)
+  {
+    $("#" + field_id)
+      .on("keydown", function(event) {
+        if(event.keyCode === $.ui.keyCode.TAB && $(this).autocomplete("instance").menu.active) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        delay: 400,
+        source: function(request, response) {
+          $.getJSON(remote_url, {
+            term: this.element[0].value
+          }, response);
+        },
+        search: function(event, ui) {
+          if(event.originalEvent.type != "input")
+            return false;
+
+          var term = this.value;
+          if(term.length < min_length) {
+            return false;
+          }
+        },
+        focus: function() {
+          return false;
+        }
+      });
+  }
+
   $("#success_modal_ok_btn").click(function() {
     location.reload();
   });
@@ -378,6 +408,9 @@
 
     get_internal_counter();
     load_autocomplete();
+    load_simple_autocomplete("genre_input", "search_genre.php", 2);
+    load_simple_autocomplete("author_input", "search_author.php", 3);
+    load_simple_autocomplete("title_input", "search_title.php", 3);
 
   },false);
 

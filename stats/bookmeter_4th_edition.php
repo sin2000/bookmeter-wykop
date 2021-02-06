@@ -29,7 +29,7 @@ $undetected_filepath = $statu->get_undetected_filepath();
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <link rel="stylesheet" href="../css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../css/bootstrap.min.css?v=2" />
   <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
   <link rel="stylesheet" href="./css/stats.css" />
   <title>bookmeter</title>
@@ -100,9 +100,9 @@ $undetected_filepath = $statu->get_undetected_filepath();
   </div>
 
   <script src="../js/jquery-3.5.1.min.js"></script>
-  <script src="../js/bootstrap.bundle.min.js"></script>
+  <script src="../js/bootstrap.bundle.min.js?v=2"></script>
   <script type="text/javascript" src="../js/datatables.min.js"></script>
-  <script src="./js/stats.js?v=2"></script>
+  <script src="./js/old_stats.js"></script>
 </body>
 
 </html>
