@@ -1,11 +1,8 @@
 <?php
 
 require_once '../utils/site_globals.php';
-//require_once '../utils/app_auth.php';
 require_once 'utils/stats_utils.php';
 
-//session_start();
-//$app = new app_auth;
 $base_url = "https://bookmeter.ct8.pl";
 
 $statu = new stats_utils(stats_utils::bm_edition_4);
@@ -30,8 +27,8 @@ $undetected_filepath = $statu->get_undetected_filepath();
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
   <link rel="stylesheet" href="../css/bootstrap.min.css?v=2" />
-  <link rel="stylesheet" type="text/css" href="../css/datatables.min.css"/>
-  <link rel="stylesheet" href="./css/stats.css" />
+  <link rel="stylesheet" type="text/css" href="../css/datatables.min.css?v=2"/>
+  <link rel="stylesheet" href="./css/stats.css?v=2" />
   <title>bookmeter</title>
 </head>
 
@@ -101,7 +98,7 @@ $undetected_filepath = $statu->get_undetected_filepath();
 
   <script src="../js/jquery-3.5.1.min.js"></script>
   <script src="../js/bootstrap.bundle.min.js?v=2"></script>
-  <script type="text/javascript" src="../js/datatables.min.js"></script>
+  <script type="text/javascript" src="../js/datatables.min.js?v=2"></script>
   <script src="./js/old_stats.js"></script>
 </body>
 

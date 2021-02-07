@@ -235,7 +235,7 @@
       });
   }
 
-  function load_simple_autocomplete(field_id, remote_url, min_length)
+  function load_simple_autocomplete(field_id, remote_url, db_field, min_length)
   {
     $("#" + field_id)
       .on("keydown", function(event) {
@@ -247,14 +247,15 @@
         delay: 400,
         source: function(request, response) {
           $.getJSON(remote_url, {
-            term: this.element[0].value
+            field: db_field,
+            term: this.element[0].value.trim()
           }, response);
         },
         search: function(event, ui) {
           if(event.originalEvent.type != "input")
             return false;
 
-          var term = this.value;
+          var term = this.value.trim();
           if(term.length < min_length) {
             return false;
           }
@@ -408,9 +409,9 @@
 
     get_internal_counter();
     load_autocomplete();
-    load_simple_autocomplete("genre_input", "search_genre.php", 2);
-    load_simple_autocomplete("author_input", "search_author.php", 3);
-    load_simple_autocomplete("title_input", "search_title.php", 3);
+    load_simple_autocomplete("genre_input", "autocomplete.php", "genre", 2);
+    load_simple_autocomplete("author_input", "autocomplete.php", "authors", 3);
+    load_simple_autocomplete("title_input", "autocomplete.php", "title", 3);
 
   },false);
 

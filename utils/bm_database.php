@@ -4,8 +4,8 @@ require_once 'confidential_vars.php';
 
 class bm_database
 {
-  private SQLite3 $db;
-  private ?SQLite3Result $tmpres = null;
+  private $db;
+  private $tmpres = null;
 
   public function __construct()
   {
@@ -80,6 +80,9 @@ class bm_database
 
   private function get_first_n($table, $field_name, $filter, $use_distinct = false, $n = 10)
   {
+    if(mb_strlen($filter) > 3000)
+      return [];
+
     $filter = mb_strtolower($filter);
     $distinct = $use_distinct ? 'DISTINCT' : '';
 

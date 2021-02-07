@@ -305,7 +305,7 @@ foreach($genre_list as $genre)
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=6" type="text/javascript"></script>
+  <script src="./js/main.js?v=7" type="text/javascript"></script>
 </body>
 
 </html>
