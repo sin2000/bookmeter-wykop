@@ -44,7 +44,7 @@ class bookmeter_entry
     }
 
     $app = new app_auth;
-    $ad = 'Wpis dodano za pomocą strony: [' . $app->get_current_base_url() . '](' . $app->get_current_base_url() . ')';
+    $ad = 'Wpis dodano za pomocą strony [' . $app->get_current_base_url() . '](' . $app->get_current_base_url() . ')';
     $atags = $this->get_additional_tags();
     $more_tags = empty($atags) ? '' : ' ' . $atags;
 

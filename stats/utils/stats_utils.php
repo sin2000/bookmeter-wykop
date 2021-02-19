@@ -57,16 +57,16 @@ class stats_utils
 
   public function get_edition_start_date($as_string = false)
   {
-    $edition_st = $this->editions[$this->bm_current_edition]->start_date;
+    $edition_dt = $this->editions[$this->bm_current_edition]->start_date;
     
-    return ($as_string ?  $edition_st->format('Y-m-d') : $edition_st);
+    return ($as_string ?  $edition_dt->format('Y-m-d') : $edition_dt);
   }
 
   public function get_edition_end_date($as_string = false)
   {
-    $edition_st = $this->editions[$this->bm_current_edition]->end_date;
+    $edition_dt = $this->editions[$this->bm_current_edition]->end_date;
     
-    return ($as_string ?  $edition_st->format('Y-m-d') : $edition_st);
+    return ($as_string ?  $edition_dt->format('Y-m-d') : $edition_dt);
   }
 
   public function get_bm_data_update_time()

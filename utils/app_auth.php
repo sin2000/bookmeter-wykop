@@ -150,12 +150,12 @@ class app_auth
     exit;
   }
 
-  public function get_current_base_url()
+  public function get_current_base_url($host_only = false)
   {
     $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
     $reqarr = explode('/', $_SERVER['REQUEST_URI']);
     $req = '';
-    if(count($reqarr) >= 3)
+    if($host_only == false && count($reqarr) >= 3)
       $req = '/' . $reqarr[1];
     
     return $scheme . '://' . $_SERVER['SERVER_NAME'] . $req;

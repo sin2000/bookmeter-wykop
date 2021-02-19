@@ -1,13 +1,13 @@
 <?php
 
 require_once '../utils/site_globals.php';
-require_once 'utils/stats_utils.php';
 require_once '../utils/bm_database.php';
+require_once '../utils/app_auth.php';
+require_once 'utils/stats_utils.php';
 
-$base_url = 'https://bookmeter.ct8.pl';
+$base_url = (new app_auth())->get_current_base_url(true);
 
 $statu = new stats_utils(stats_utils::bm_actual_edition);
-$curr_edition = htmlspecialchars($statu->get_current_edition());
 $edition_start_date = htmlspecialchars($statu->get_edition_start_date(true));
 $edition_end_date = htmlspecialchars($statu->get_edition_end_date(true));
 $undetected_filepath = $statu->get_undetected_filepath();
@@ -26,13 +26,18 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
   <link rel="stylesheet" href="../css/bootstrap.min.css?v=2" />
   <link rel="stylesheet" type="text/css" href="../css/datatables.min.css?v=2" />
   <link rel="stylesheet" href="./css/stats.css?v=3" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
   <title>bookmeter</title>
 </head>
 
 <body>
   <div id="main_content" class="container-fluid mt-3">
-    <span id="bm_edition" class="hide"><?php echo $curr_edition ?></span>
-
     <div class="row">
       <div class="col-auto align-self-center">
         <h5><b>Statystyki - V edycja <a href="https://www.wykop.pl/tag/bookmeter" target="_blank">Bookmeter</a></b> <span class="small text-muted"><?php echo $edition_start_date ?> - <?php echo $edition_end_date ?></span></h5>
@@ -47,8 +52,10 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
           <div class="dropdown-menu">
             <a class="dropdown-item" href="csv_download.php">Pobierz plik CSV</a>
             <a class="dropdown-item" href="<?php echo $undetected_filepath ?>">Pokaż niewykryte</a>
-            <a class="dropdown-item" href="<?php echo $base_url ?>">Dodaj wpis</a>
             <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="<?php echo $base_url ?>">Dodaj wpis</a>
+            <a class="dropdown-item" href="index.php"><b>Tabela wpisów</b></a>
+            <a class="dropdown-item" href="summary.php">Podsumowanie</a>
             <a class="dropdown-item" href="bookmeter_4th_edition.php">IV edycja</a>
           </div>
         </div>

@@ -4,7 +4,9 @@ require_once 'confidential_vars.php';
 
 class bm_database
 {
+  /** @var SQLite3 **/
   private $db;
+  /** @var SQLite3Result **/
   private $tmpres = null;
 
   public function __construct()
@@ -45,17 +47,17 @@ class bm_database
       SELECT last_update, last_full_update FROM last_operations
     SQL;
 
-    $res = $this->db->querySingle($sql, true);
+    $data = $this->db->querySingle($sql, true);
     $fmtdt = ['', ''];
     $dt = new Datetime();
-    if($res['last_update'] != null)
+    if($data['last_update'] != null)
     {
-      $dt->setTimestamp($res['last_update']);
+      $dt->setTimestamp($data['last_update']);
       $fmtdt[0] = $dt->format('Y-m-d H:i');
     }
-    if($res['last_full_update'] != null)
+    if($data['last_full_update'] != null)
     {
-      $dt->setTimestamp($res['last_full_update']);
+      $dt->setTimestamp($data['last_full_update']);
       $fmtdt[1] = $dt->format('Y-m-d H:i');
     }
 
@@ -76,6 +78,185 @@ class bm_database
   public function get_next_bm_view_row()
   {
     return $this->tmpres->fetchArray(SQLITE3_NUM);
+  }
+
+  public function get_book_count()
+  {
+    $sql = <<<SQL
+      SELECT COUNT(id) FROM bm_entry
+    SQL;
+
+    $res = $this->db->querySingle($sql);
+
+    return $res;
+  }
+
+  public function get_login_count()
+  {
+    $sql = <<<SQL
+      SELECT COUNT(id) FROM login
+    SQL;
+
+    $res = $this->db->querySingle($sql, false);
+
+    return $res;
+  }
+
+  public function get_count_by_sex()
+  {
+    $sql = <<<SQL
+      SELECT
+        IFNULL(SUM(CASE WHEN sex = 0 THEN 1 ELSE 0 END), 0) AS unk,
+        IFNULL(SUM(CASE WHEN sex = 1 THEN 1 ELSE 0 END), 0) AS fem,
+        IFNULL(SUM(CASE WHEN sex = 2 THEN 1 ELSE 0 END), 0) AS mal
+      FROM login
+    SQL;
+
+    $arr = $this->db->querySingle($sql, true);
+    
+    // $arr['unk'] - unknown, $arr['fem'] - female $arr['mal'] - male
+    return $arr;
+  }
+
+  public function get_book_count_by_sex()
+  {
+    $sql = <<<SQL
+      SELECT
+        IFNULL(SUM(CASE WHEN sex = 0 THEN 1 ELSE 0 END), 0) AS unk,
+        IFNULL(SUM(CASE WHEN sex = 1 THEN 1 ELSE 0 END), 0) AS fem,
+        IFNULL(SUM(CASE WHEN sex = 2 THEN 1 ELSE 0 END), 0) AS mal
+      FROM bm_entry AS b
+      LEFT JOIN login AS l ON b.login_id = l.id
+     SQL;
+
+     $arr = $this->db->querySingle($sql, true);
+
+     // $arr['unk'] - unknown, $arr['fem'] - female $arr['mal'] - male
+    return $arr;
+  }
+
+  public function get_top_users()
+  {
+    $sql = <<<SQL
+      SELECT l.name, COUNT(b.login_id) FROM bm_entry AS b
+      LEFT JOIN login AS l ON b.login_id = l.id
+      GROUP BY b.login_id
+      ORDER BY COUNT(b.login_id) DESC, l.name COLLATE NOCASE
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_top_books()
+  {
+    $sql = <<<SQL
+      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count) FROM bm_entry
+      GROUP BY authors, title
+      HAVING (SUM(rate)/COUNT(id)) > 5
+      ORDER BY (SUM(rate)/COUNT(id)) DESC, SUM(vote_count) DESC, authors, title
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1], $row[2], $row[3] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_worst_books()
+  {
+    $sql = <<<SQL
+      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count) FROM bm_entry
+      GROUP BY authors, title
+      HAVING (SUM(rate)/COUNT(id)) < 5
+      ORDER BY (SUM(rate)/COUNT(id)), SUM(vote_count), authors, title
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1], $row[2], $row[3] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_top_voted_books()
+  {
+    $sql = <<<SQL
+      SELECT authors, title, SUM(vote_count) FROM bm_entry
+      GROUP BY authors, title
+      ORDER BY SUM(vote_count) DESC, authors, title
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1], $row[2] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_top_authors()
+  {
+    $sql = <<<SQL
+      SELECT authors, COUNT(id) FROM bm_entry
+      GROUP BY authors
+      ORDER BY COUNT(id) DESC, authors
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_top_genres()
+  {
+    $sql = <<<SQL
+      SELECT g.name, COUNT(b.genre_id) FROM bm_entry AS b
+      LEFT JOIN genre AS g ON b.genre_id = g.id
+      GROUP BY b.genre_id
+      ORDER BY COUNT(b.genre_id) DESC, g.name
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1] ]);
+    }
+    $res->finalize();
+
+    return $arr;
   }
 
   private function get_first_n($table, $field_name, $filter, $use_distinct = false, $n = 10)
@@ -103,6 +284,7 @@ class bm_database
     {
       array_push($arr, $row[0]);
     }
+    $result->finalize();
 
     return $arr;
   }
