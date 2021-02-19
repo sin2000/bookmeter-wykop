@@ -78,7 +78,7 @@ class bookmeter_utils
   private function find_counter_in_body($body)
   {
     $matches = array();
-    if(preg_match('/^[ ]*\d+[ ]*\+[ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
+    if(preg_match('/^[ ]*\d+[ ]*[\+\-][ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
     {
       $counter = $matches[1] ?? -1;
       return $counter;
