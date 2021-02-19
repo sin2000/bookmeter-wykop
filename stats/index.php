@@ -44,7 +44,7 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
       </div>
     </div>
     <div class="row no-gutters mb-2">
-      <div class="col-auto align-middle pr-3 mb-1">
+      <div class="col-auto align-middle pr-2 mb-1">
         <div class="btn-group dropright">
           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Menu
@@ -59,6 +59,9 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
             <a class="dropdown-item" href="bookmeter_4th_edition.php">IV edycja</a>
           </div>
         </div>
+        <a href="summary.php" class="btn btn-outline-success ml-1" role="button">
+            Podsumowanie
+        </a>
       </div>
       <div class="col-sm align-self-center form-group mb-1">
         <div class="alert alert-secondary alert-dismissible fade show small m-0 p-2" role="alert"
