@@ -57,6 +57,8 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
             <a class="dropdown-item" href="index.php"><b>Tabela wpisów</b></a>
             <a class="dropdown-item" href="summary.php">Podsumowanie</a>
             <a class="dropdown-item" href="bookmeter_4th_edition.php">IV edycja</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="https://www.wykop.pl/tag/bookmeter/" target="_blank">Tag bookmeter</a>
           </div>
         </div>
         <a href="summary.php" class="btn btn-outline-success ml-1" role="button">

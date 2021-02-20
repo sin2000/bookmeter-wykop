@@ -73,6 +73,8 @@ $worst_books_html = $summ_util->get_top_books(true);
             <a class="dropdown-item" href="index.php">Tabela wpisów</a>
             <a class="dropdown-item" href="summary.php"><b>Podsumowanie</b></a>
             <a class="dropdown-item" href="bookmeter_4th_edition.php">IV edycja</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="https://www.wykop.pl/tag/bookmeter/" target="_blank">Tag bookmeter</a>
           </div>
         </div>
       </div>
