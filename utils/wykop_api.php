@@ -35,7 +35,7 @@ class wykop_api
 
   public function tag_suggest($tag_name)
   {
-    $res = $this->curl($this->base_api_url . '/Suggest/Tags/' . $tag_name . '/appkey/' . $this->readonly_appkey);
+    $res = $this->curl($this->base_api_url . '/Suggest/Tags/' . $tag_name . '/appkey/' . $this->readonly_appkey, null, 9);
 
     $content = $res['content'] ?? '';
     return json_decode($content, true);
