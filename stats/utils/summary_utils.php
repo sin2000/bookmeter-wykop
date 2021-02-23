@@ -179,7 +179,7 @@ class summary_utils
       $html .=
         "<tr>
         <th scope=\"row\">$nr</th>
-        <td><a href=\"https://www.wykop.pl/ludzie/$login/\">$login</a></td>
+        <td><a href=\"https://www.wykop.pl/tag/bookmeter/autor/$login/\" target=\"_blank\">$login</a></td>
         <td>$usr_book_count</td>
         </tr>";
     }
@@ -200,11 +200,12 @@ class summary_utils
       $title = htmlspecialchars($entry[1]);
       $rate = htmlspecialchars(round($entry[2], 1));
       $vote_count = htmlspecialchars($entry[3]);
+      $entry_id = urlencode($entry[4]);
       $html .=
         "<tr>
         <th scope=\"row\">$nr</th>
         <td>$author</td>
-        <td>$title</td>
+        <td><a href=\"https://www.wykop.pl/wpis/$entry_id/\" target=\"_blank\">$title</a></td>
         <td>$rate</td>
         <td>$vote_count</td>
         </tr>";

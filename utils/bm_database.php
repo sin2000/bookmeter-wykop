@@ -142,7 +142,7 @@ class bm_database
       LEFT JOIN login AS l ON b.login_id = l.id
       GROUP BY b.login_id
       ORDER BY COUNT(b.login_id) DESC, l.name COLLATE NOCASE
-      LIMIT 10
+      LIMIT 20
     SQL;
 
     $res = $this->db->query($sql);
@@ -159,18 +159,18 @@ class bm_database
   public function get_top_books()
   {
     $sql = <<<SQL
-      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count) FROM bm_entry
+      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count), entry_id FROM bm_entry
       GROUP BY authors, title
       HAVING (SUM(rate)/COUNT(id)) > 5
       ORDER BY (SUM(rate)/COUNT(id)) DESC, SUM(vote_count) DESC, authors, title
-      LIMIT 10
+      LIMIT 20
     SQL;
 
     $res = $this->db->query($sql);
     $arr = [];
     while($row = $res->fetchArray(SQLITE3_NUM))
     {
-      array_push($arr, [ $row[0], $row[1], $row[2], $row[3] ]);
+      array_push($arr, [ $row[0], $row[1], $row[2], $row[3], $row[4] ]);
     }
     $res->finalize();
 
@@ -180,7 +180,7 @@ class bm_database
   public function get_worst_books()
   {
     $sql = <<<SQL
-      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count) FROM bm_entry
+      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count), entry_id FROM bm_entry
       GROUP BY authors, title
       HAVING (SUM(rate)/COUNT(id)) < 5
       ORDER BY (SUM(rate)/COUNT(id)), SUM(vote_count), authors, title
@@ -191,7 +191,7 @@ class bm_database
     $arr = [];
     while($row = $res->fetchArray(SQLITE3_NUM))
     {
-      array_push($arr, [ $row[0], $row[1], $row[2], $row[3] ]);
+      array_push($arr, [ $row[0], $row[1], $row[2], $row[3], $row[4] ]);
     }
     $res->finalize();
 

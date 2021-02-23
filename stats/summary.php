@@ -19,6 +19,8 @@ $edition_start_date_sum = htmlspecialchars(strftime('%e %B %Y', $statu->get_edit
 $edition_end_date_sum = htmlspecialchars(strftime('%e %B %Y', $statu->get_edition_end_date()->getTimestamp()));
 
 $bmdb = new bm_database();
+$last_upd_arr = $bmdb->fetch_last_update_times();
+
 $summ_util = new summary_utils($statu, $bmdb);
 $progress = htmlspecialchars($summ_util->get_progress());
 $edition_end = $summ_util->has_edition_ended() ? 'zakończyła' : 'zakończy';
@@ -63,7 +65,7 @@ $worst_books_html = $summ_util->get_top_books(true);
       </div>
     </div>
     <div class="row no-gutters mb-2">
-      <div class="col-auto align-middle pr-3 mb-1">
+      <div class="col-auto align-middle pr-2 mb-1">
         <div class="btn-group dropright">
           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Menu
@@ -76,6 +78,15 @@ $worst_books_html = $summ_util->get_top_books(true);
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="https://www.wykop.pl/tag/bookmeter/" target="_blank">Tag bookmeter</a>
           </div>
+        </div>
+      </div>
+      <div class="col-sm align-self-center form-group mb-1">
+        <div class="alert alert-secondary alert-dismissible fade show small m-0 p-2" role="alert"
+          title="Ostatnie aktualizacje podsumowania. Aktualizacja - podsumowanie uwzględnia tylko nowe wpisy od poprzedniej aktualizacji. Pełna aktualizacja - podsumowanie uwzględnia wszystkie wpisy.">
+          <b>Aktualizacja:</b> <?php echo $last_upd_arr[0] ?>. <b>Pełna aktualizacja:</b> <?php echo $last_upd_arr[1] ?>.
+          <button type="button" class="close p-2" data-dismiss="alert" aria-label="Zamknij" title="">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
       </div>
     </div>
@@ -109,7 +120,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         </div>
       </div>
 
-      <div class="mt-3"><b>Top 10 wykopowiczów:</b></div>
+      <div class="mt-3"><b>Top 20 wykopowiczów:</b></div>
       <table class="table table-sm mt-2 table-hover">
       <thead class="thead-light">
         <tr>
@@ -123,7 +134,7 @@ $worst_books_html = $summ_util->get_top_books(true);
       </tbody>
       </table>
 
-      <div class="mt-4"><b>Top 10 najwyżej ocenionych książek:</b></div>
+      <div class="mt-4"><b>Top 20 najwyżej ocenionych książek:</b></div>
       <table class="table table-sm mt-2 table-hover">
       <thead class="thead-light">
         <tr>
