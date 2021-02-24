@@ -107,11 +107,13 @@ class bookmeter_entry
   public function set_title($title)
   {
     $this->title = $this->strip_unsafe_chars(trim($title));
+    $this->title = $this->replace_tabs($this->title);
   }
   
   public function set_author($author)
   {
     $this->author = $this->strip_unsafe_chars(trim($author));
+    $this->author = $this->replace_tabs($this->author);
   }
 
   public function set_genre($selected_genre, $genre_from_input)
@@ -119,16 +121,19 @@ class bookmeter_entry
     $genre_tmp = $selected_genre == 'inny...' ? $genre_from_input : $selected_genre;
 
     $this->genre = $this->strip_unsafe_chars(trim($genre_tmp));
+    $this->genre = $this->replace_tabs($this->genre);
   }
 
   public function set_isbn($isbn)
   {
     $this->isbn = $this->strip_unsafe_chars(trim($isbn));
+    $this->isbn = $this->replace_tabs($this->isbn);
   }
 
   public function set_description($description)
   {
     $this->descr = $this->strip_unsafe_chars(trim($description));
+    $this->descr = $this->replace_tabs($this->descr);
   }
 
   public function set_save_additional_tags($save)
@@ -139,6 +144,7 @@ class bookmeter_entry
   public function set_additional_tags($tags)
   {
     $this->additional_tags = $this->strip_unsafe_chars(trim($tags));
+    $this->additional_tags = $this->replace_tabs($this->additional_tags);
   }
 
   public function set_img_file($img_file)
@@ -150,11 +156,13 @@ class bookmeter_entry
   public function set_img_url($img_url)
   {
     $this->img_url = $this->strip_unsafe_chars(trim($img_url));
+    $this->img_url = $this->replace_tabs($this->img_url);
   }
 
   public function set_rate($rate)
   {
     $this->rate = $this->strip_unsafe_chars($rate);
+    $this->rate = $this->replace_tabs($this->rate);
   }
 
   public function set_bold_labels($bold_labels)
@@ -317,6 +325,11 @@ class bookmeter_entry
   private function strip_unsafe_chars($str)
   {
     return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/u', '', $str);
+  }
+
+  private function replace_tabs($source, $replacement = ' ')
+  {
+    return str_replace("\t", $replacement, $source);
   }
 }
 
