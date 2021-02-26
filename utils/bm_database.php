@@ -159,10 +159,10 @@ class bm_database
   public function get_top_books()
   {
     $sql = <<<SQL
-      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count), entry_id FROM bm_entry
+      SELECT authors, title, AVG(rate), SUM(vote_count), entry_id FROM bm_entry
       GROUP BY authors, title
-      HAVING (SUM(rate)/COUNT(id)) > 5
-      ORDER BY (SUM(rate)/COUNT(id)) DESC, SUM(vote_count) DESC, authors, title
+      HAVING AVG(rate) > 5
+      ORDER BY AVG(rate) DESC, SUM(vote_count) DESC, authors, title
       LIMIT 20
     SQL;
 
@@ -180,10 +180,10 @@ class bm_database
   public function get_worst_books()
   {
     $sql = <<<SQL
-      SELECT authors, title, SUM(rate)/COUNT(id), SUM(vote_count), entry_id FROM bm_entry
+      SELECT authors, title, AVG(rate), SUM(vote_count), entry_id FROM bm_entry
       GROUP BY authors, title
-      HAVING (SUM(rate)/COUNT(id)) < 5
-      ORDER BY (SUM(rate)/COUNT(id)), SUM(vote_count), authors, title
+      HAVING AVG(rate) < 5
+      ORDER BY AVG(rate), SUM(vote_count), authors, title
       LIMIT 10
     SQL;
 
@@ -241,11 +241,20 @@ class bm_database
   public function get_top_genres()
   {
     $sql = <<<SQL
-      SELECT g.name, COUNT(b.genre_id) FROM bm_entry AS b
-      LEFT JOIN genre AS g ON b.genre_id = g.id
-      GROUP BY b.genre_id
-      ORDER BY COUNT(b.genre_id) DESC, g.name
-      LIMIT 10
+      SELECT * FROM(
+        SELECT g.name,
+        (
+          SELECT COUNT(bb.genre_id) FROM bm_entry AS bb
+          LEFT JOIN genre AS gg ON bb.genre_id = gg.id
+          WHERE INSTR(LOWER(gg.name), LOWER(g.name))
+        ) genre_count
+        FROM bm_entry AS b
+        LEFT JOIN genre AS g ON b.genre_id = g.id
+        GROUP BY b.genre_id
+        ORDER BY COUNT(b.genre_id) DESC, g.name
+        LIMIT 10
+      )
+      ORDER BY genre_count DESC
     SQL;
 
     $res = $this->db->query($sql);
