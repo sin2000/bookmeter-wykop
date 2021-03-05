@@ -67,7 +67,7 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
       </div>
       <div class="col-sm align-self-center form-group mb-1">
         <div class="alert alert-secondary alert-dismissible fade show small m-0 p-2" role="alert"
-          title="Ostatnie aktualizacje wpisów. Aktualizacja - dodawane są tylko nowe wpisy. Pełna aktualizacja - uaktualnienie treści, nowe wpisy oraz usuwanie skasowanych wpisów.">
+          title="Ostatnie aktualizacje wpisów. Aktualizacja - dodawane są nowe wpisy oraz odświeżane są plusy w 50 najnowszych wpisach. Pełna aktualizacja - uaktualnienie treści, nowe wpisy oraz usuwanie skasowanych wpisów.">
           <b>Aktualizacja:</b> <?php echo $last_upd_arr[0] ?>. <b>Pełna aktualizacja:</b> <?php echo $last_upd_arr[1] ?>.
           <button type="button" class="close p-2" data-dismiss="alert" aria-label="Zamknij" title="">
             <span aria-hidden="true">&times;</span>
