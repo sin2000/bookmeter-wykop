@@ -51,8 +51,8 @@ foreach($genre_list as $genre)
   <link rel="stylesheet" href="./css/bootstrap.min.css?v=2" />
   <link rel="stylesheet" href="./css/jquery-ui.min.css" />
   <link rel="stylesheet" href="./css/jquery-ui.theme.min.css" />
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-  <link rel="stylesheet" href="./css/main.css?v=2" />
+  <link rel="stylesheet" href="./css/font-awesome.min.css" />
+  <link rel="stylesheet" href="./css/main.css?v=3" />
   <title>bookmeter</title>
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -190,7 +190,100 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="descr_input">Opis</label>
-          <textarea id="descr_input" class="form-control" name="descr_input" rows="3"></textarea>
+          <textarea id="descr_input" class="form-control mb-1" name="descr_input" rows="3"></textarea>
+          <button id="descr_bold_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Pogrubienie" title="Pogrubienie">
+            <i class="fa fa-bold" aria-hidden="true"></i>
+          </button>
+          <button id="descr_italic_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Pochylenie" title="Pochylenie">
+            <i class="fa fa-italic" aria-hidden="true"></i>
+          </button>
+          <button id="descr_quote_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Cytat" title="Cytat">
+            <i class="fa fa-quote-right" aria-hidden="true"></i>
+          </button>
+          <button id="descr_link_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Link" title="Link">
+            <i class="fa fa-chain" aria-hidden="true"></i>
+          </button>
+          <button id="descr_code_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Kod" title="Kod">
+            <i class="fa fa-code" aria-hidden="true"></i>
+          </button>
+          <button id="descr_spoil_btn" type="button" class="btn btn-outline-secondary" aria-label="Spoiler" title="Spoiler">
+            spoil
+          </button>
+          <div class="btn-group dropup">
+            <button id="descr_lenny_btn" type="button" class="btn btn-outline-secondary" aria-label="lennyface" title="lennyface">
+              ( ͡° ͜ʖ ͡°)
+            </button>
+            <button id="descr_lenny_dropdown_btn" type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
+              <span class="sr-only">Rozwiń</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-noborder" aria-labelledby="descr_lenny_dropdown_btn">
+              <table class="small lennytab">
+              <tr>
+                <td><a href="#" class="lenny" title="">( ͡° ʖ̯ ͡°)</a></td>
+                <td><a href="#" class="lenny" title="">( ͡º ͜ʖ͡º)</a></td>
+                <td><a href="#" class="lenny" title="">( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)</a></td>
+                <td><a href="#" class="lenny" title="">(⌐ ͡■ ͜ʖ ͡■)</a></td>
+                <td><a href="#" class="lenny" title="">(╥﹏╥)</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(╯︵╰,)</a></td>
+                <td><a href="#" class="lenny" title="">(ʘ‿ʘ)</a></td>
+                <td><a href="#" class="lenny" title="">(｡◕‿‿◕｡)</a></td>
+                <td><a href="#" class="lenny" title="">ᕙ(⇀‸↼‶)ᕗ</a></td>
+                <td><a href="#" class="lenny" title="">ᕦ(òóˇ)ᕤ</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(✌ ﾟ ∀ ﾟ)☞</a></td>
+                <td><a href="#" class="lenny" title="">ʕ•ᴥ•ʔ</a></td>
+                <td><a href="#" class="lenny" title="">ᶘᵒᴥᵒᶅ</a></td>
+                <td><a href="#" class="lenny" title="">(⌒(oo)⌒)</a></td>
+                <td><a href="#" class="lenny" title="">ᄽὁȍ ̪ őὀᄿ</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">( ͡€ ͜ʖ ͡€)</a></td>
+                <td><a href="#" class="lenny" title="">( ͡° ͜ʖ ͡°)</a></td>
+                <td><a href="#" class="lenny" title="">( ͡° ͜ʖ ͡°)ﾉ⌐■-■</a></td>
+                <td><a href="#" class="lenny" title="">(⌐ ͡■ ͜ʖ ͡■)</a></td>
+                <td><a href="#" class="lenny" title="">¯\_(ツ)_/¯</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(ꖘ⏏ꖘ)</a></td>
+                <td><a href="#" class="lenny" title="">(╯°□°）╯︵ ┻━┻</a></td>
+                <td><a href="#" class="lenny" title="">( ͡~ ͜ʖ ͡°)</a></td>
+                <td><a href="#" class="lenny" title="">( ಠ_ಠ)</a></td>
+                <td><a href="#" class="lenny" title="">(・へ・)</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(ง✿﹏✿)ง</a></td>
+                <td><a href="#" class="lenny" title="">(づ•﹏•)づ</a></td>
+                <td><a href="#" class="lenny" title="">乁(♥ ʖ̯♥)ㄏ</a></td>
+                <td><a href="#" class="lenny" title="">|૦ઁ෴૦ઁ|</a></td>
+                <td><a href="#" class="lenny" title="">乁(⫑ᴥ⫒)ㄏ</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(ꖘ‸ꖘ)</a></td>
+                <td><a href="#" class="lenny" title="">ᕙ(✿ ͟ʖ✿)ᕗ</a></td>
+                <td><a href="#" class="lenny" title="">(งⱺ ͟ل͜ⱺ)ง</a></td>
+                <td><a href="#" class="lenny" title="">(￣෴￣)</a></td>
+                <td><a href="#" class="lenny" title="">ヽ( ͠°෴ °)ﾉ</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">└[⚆ᴥ⚆]┘</a></td>
+                <td><a href="#" class="lenny" title="">ヽ(☼ᨓ☼)ﾉ</a></td>
+                <td><a href="#" class="lenny" title="">XD</a></td>
+                <td><a href="#" class="lenny" title="">(ⴲ﹏ⴲ)/</a></td>
+                <td><a href="#" class="lenny" title="">(ಠ‸ಠ)</a></td>
+              </tr>
+              <tr>
+                <td><a href="#" class="lenny" title="">(ง ͠° ͟ل͜ ͡°)ง</a></td>
+                <td><a href="#" class="lenny" title="">ლ(ಠ_ಠ ლ)</a></td>
+                <td><a href="#" class="lenny" title="">(－‸ლ)</a></td>
+                <td><a href="#" class="lenny" title="">( ͡° ͜ʖ ͡° )つ──☆*:・ﾟ</a></td>
+                <td><a href="#" class="lenny" title="">(╭☞σ ͜ʖσ)╭☞</a></td>
+              </tr>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -311,7 +404,7 @@ foreach($genre_list as $genre)
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=7" type="text/javascript"></script>
+  <script src="./js/main.js?v=8" type="text/javascript"></script>
 </body>
 
 </html>

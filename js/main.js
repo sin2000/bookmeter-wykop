@@ -44,12 +44,10 @@
   }
 
   function validate_isbn() {
-
     var elem = $("#isbn_input");
 
     var input_text = elem.val();
-    if (input_text == "")
-    {
+    if(input_text == "") {
       elem[0].setCustomValidity("");
       return;
     }
@@ -125,7 +123,6 @@
   }
 
   function get_internal_counter() {
-
     $.ajax({
       url: "./counter.php",
       cache: false,
@@ -146,16 +143,12 @@
   function get_caret_position(elem) {
     var caret_pos = 0;
 
-    // IE Support
     if(document.selection) {
       elem.focus();
       var sel = document.selection.createRange();
-      // Move selection start to 0 position
       sel.moveStart("character", -elem.value.length);
-      // The caret position is selection length
       caret_pos = sel.text.length;
     }
-    // Firefox support
     else if(elem.selectionStart || elem.selectionStart == '0')
       caret_pos = elem.selectionStart;
   
@@ -193,6 +186,48 @@
     }
 
     return "";
+  }
+
+  function get_selected_obj(input_obj) {
+    var e = input_obj;
+    if(e.selectionStart || e.selectionStart == '0') {
+      var l = e.selectionEnd - e.selectionStart;
+      return { start: e.selectionStart, end: e.selectionEnd, length: l, text: e.value.substr(e.selectionStart, l) };
+    }
+
+    if(document.selection) {
+      e.focus();
+      var r = document.selection.createRange();
+      if (r === null) {
+        return { start: 0, end: e.value.length, length: 0 }
+      }
+
+      var re = e.createTextRange();
+      var rc = re.duplicate();
+      re.moveToBookmark(r.getBookmark());
+      rc.setEndPoint('EndToStart', re);
+
+      return { start: rc.text.length, end: rc.text.length + r.text.length, length: r.text.length, text: r.text };
+    }
+
+    return { start: 0, end: e.value.length, length: 0, text: "" };
+  }
+
+  function set_selection(input_obj, start, end) {
+    var e = input_obj;
+    if(e.setSelectionRange) {
+        e.focus();
+        e.setSelectionRange(start, end);
+    } else if(e.createTextRange) {
+        var range = e.createTextRange();
+        range.collapse(true);
+        range.moveEnd('character', end);
+        range.moveStart('character', start);
+        range.select();
+    } else if(e.selectionStart) {
+        e.selectionStart = start;
+        e.selectionEnd = end;
+    }
   }
 
   function load_autocomplete() {
@@ -266,6 +301,58 @@
       });
   }
 
+  // Wykop markdown
+  function format_mid_text(text, sel, mark, insert_operation) {
+    switch(insert_operation) {
+      case "both":
+        return mark + sel.text.trim().replace(/(\S)(\n+)(\S)/g, "$1" + mark + "$2" + mark + "$3") + mark;
+      case "before":
+        var newline = text.substr(0, sel.start).match(/\S$/) ? "\n" : "";
+        return newline + mark + sel.text.trim().replace(/\n(\S)/g, "\n" + mark + "$1");
+      default:
+        return "";
+    }
+  }
+
+  function wykop_markdown_format(textbox_name, mark, placeholder, operation) {
+    var input_obj = $("#" + textbox_name);
+    input_obj.focus();
+
+    var sel = get_selected_obj(input_obj[0]);
+    var text = input_obj.val();
+    var select = { start: sel.end, end: sel.end };
+
+    if(sel.text.length == 0) {
+      sel.text = placeholder;
+      select.end += placeholder.length;
+    }
+
+    text = text.substr(0, sel.start) + format_mid_text(text, sel, mark, operation) + text.substr(sel.end);
+
+    select.start += mark.length;
+    select.end += mark.length;
+
+    input_obj.val(text);
+    set_selection(input_obj[0], select.start, select.end)
+  }
+
+  function insert_text_from_src(textbox_name, source_obj) {
+    var input_obj = $("#" + textbox_name);
+    input_obj.focus();
+
+    var sel = get_selected_obj(input_obj[0]);
+    var text = input_obj.val();
+    var select = { start: sel.end, end: sel.end };
+    var mark = $(source_obj).text().trim();
+
+    text = text.substr(0, sel.start) + mark + text.substr(sel.end);
+    select.start = sel.end + mark.length;
+    select.end = select.start;
+
+    input_obj.val(text);
+    set_selection(input_obj[0], select.start, select.end);
+  }
+  
   $("#success_modal_ok_btn").click(function() {
     location.reload();
   });
@@ -375,9 +462,79 @@
       add_genre_input[0].setCustomValidity("");
     }
   });
-  
-  window.addEventListener("load", function() {
 
+  $("#descr_bold_btn").click(function(e){
+    e.preventDefault();
+
+    wykop_markdown_format("descr_input", "**", "pogrubiony", "both");
+  });
+
+  $("#descr_italic_btn").click(function(e){
+    e.preventDefault();
+
+    wykop_markdown_format("descr_input", "_", "pochylony", "both");
+  });
+
+  $("#descr_quote_btn").click(function(e){
+    e.preventDefault();
+
+    wykop_markdown_format("descr_input", "> ", "cytat", "before");
+  });
+
+  $("#descr_link_btn").click(function(e){
+    e.preventDefault();
+
+    var input_obj = $("#descr_input");
+    input_obj.focus();
+
+    var sel = get_selected_obj(input_obj[0]);
+    var text = input_obj.val();
+    var select = { start: sel.end, end: sel.end };
+    var mark = "";
+
+    if(sel.length > 0)
+    {
+      if(sel.text.indexOf("http") == 0)
+        mark = "[opis odnośnika](" + sel.text + ")";
+      else
+        mark = "[" + sel.text + "](https://www.wykop.pl)";
+    }
+    else {
+      mark = "[opis odnośnika](https://www.wykop.pl)";
+      select.start += 1;
+      select.end += 15;
+    }
+    text = text.substr(0, sel.start) + mark + text.substr(sel.end);
+
+    input_obj.val(text);
+    set_selection(input_obj[0], select.start, select.end);
+  });
+  
+  $("#descr_code_btn").click(function(e){
+    e.preventDefault();
+
+    wykop_markdown_format("descr_input", "`", "kod", "both");
+  });
+
+  $("#descr_spoil_btn").click(function(e){
+    e.preventDefault();
+
+    wykop_markdown_format("descr_input", "! ", "spolier", "before");
+  });
+
+  $("#descr_lenny_btn").click(function(e){
+    e.preventDefault();
+
+    insert_text_from_src("descr_input", this);
+  });
+
+  $(".lenny").click(function(e){
+    e.preventDefault();
+
+    insert_text_from_src("descr_input", this);
+  });
+
+  window.addEventListener("load", function() {
     document.querySelector(".custom-file-input").addEventListener("change", function(e) {
       var fileName = document.getElementById("file_input").files[0].name;
       var nextSibling = e.target.nextElementSibling

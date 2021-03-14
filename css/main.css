@@ -87,3 +87,37 @@ input[type=file]::-webkit-file-upload-button {
 .ui-autocomplete-loading {
   background: white url("../img/loading.gif") 99% center no-repeat !important;
 }
+
+.btn-minw-40 {
+   min-width: 40px;
+}
+
+.lenny {
+   text-decoration: none;
+   display: block;
+   color: #212529 !important;
+   padding: 8px;
+}
+
+.lenny:hover {
+   background: #f1f4f5;
+   text-decoration: none;
+}
+
+.lennytab {
+   border-collapse: collapse;
+   border-spacing: 0;
+   white-space: nowrap;
+}
+
+.lennytab td {
+   padding: 0;
+   border: 1px solid #ededed;
+   text-align: left;
+   vertical-align: top;
+}
+
+.dropdown-menu-noborder {
+   padding: 0;
+   border: 0;
+}
