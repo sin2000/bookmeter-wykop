@@ -79,7 +79,7 @@ class app_auth
     return true;
   }
 
-  private function has_auth_in_session()
+  public function has_auth_in_session()
   {
     if(empty($_SESSION['login_name']) || empty($_SESSION['login_token']))
       return false;

@@ -82,7 +82,7 @@ $worst_books_html = $summ_util->get_top_books(true);
       </div>
       <div class="col-sm align-self-center form-group mb-1">
         <div class="alert alert-secondary alert-dismissible fade show small m-0 p-2" role="alert"
-          title="Ostatnie aktualizacje podsumowania. Aktualizacja - podsumowanie uwzględnia tylko nowe wpisy od poprzedniej aktualizacji(pod uwagę brane są także odświeżone plusy z 50 najnowszych wpisów). Pełna aktualizacja - podsumowanie uwzględnia wszystkie wpisy.">
+          title="Ostatnie aktualizacje podsumowania. Aktualizacja - podsumowanie uwzględnia tylko nowe wpisy od poprzedniej aktualizacji(pod uwagę brane są także odświeżone plusy z ~50 najnowszych wpisów). Pełna aktualizacja - podsumowanie uwzględnia wszystkie wpisy.">
           <b>Aktualizacja:</b> <?php echo $last_upd_arr[0] ?>. <b>Pełna aktualizacja:</b> <?php echo $last_upd_arr[1] ?>.
           <button type="button" class="close p-2" data-dismiss="alert" aria-label="Zamknij" title="">
             <span aria-hidden="true">&times;</span>

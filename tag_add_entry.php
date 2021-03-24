@@ -69,11 +69,21 @@ if($val_error != '')
 
 $app = new app_auth;
 $wapi = new wykop_api;
+
+if($app->has_auth_in_session() == false)
+  error_response('nieprawidłowy login lub hasło. Wyloguj i zaloguj się ponownie.');
+
 $login_result = $wapi->login_index($app->get_session_login_name(), $app->get_session_token());
 if($login_result->errmsg_curl != '')
   error_response($login_result->errmsg_curl, 'wykopapi');
 if(isset($login_result->content['error']['message_pl']) && $login_result->content['error']['message_pl'] != '')
-  error_response($login_result->content['error']['message_pl'], 'wykopapi');
+{
+  $bad_login_or_passwd_error_code = 14;
+  if(isset($login_result->content['error']['code']) && $login_result->content['error']['code'] == $bad_login_or_passwd_error_code)
+    error_response($login_result->content['error']['message_pl'] . ' (Wyloguj i zaloguj się ponownie)', 'wykopapi');
+  else
+    error_response($login_result->content['error']['message_pl'], 'wykopapi');
+}
 
 $userkey = $login_result->content['data']['userkey'];
 error_if_empty($userkey, 'brak userkey');
