@@ -319,7 +319,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="image_url_input">Url obrazka</label>
-          <input id="image_url_input" type="text" name="image_url_input" class="form-control">
+          <input id="image_url_input" type="text" name="image_url_input" class="form-control" autocomplete="off">
         </div>
       </div>
 
