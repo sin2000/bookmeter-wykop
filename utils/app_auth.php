@@ -27,7 +27,8 @@ class app_auth
     if($this->has_auth_cookies())
     {
       $this->set_auth_to_session($this->get_cookie_login_name(), $this->get_cookie_token());
-      return;
+      if($this->has_auth_in_session())
+        return;
     }
 
     $auth_id = urlencode($this->generate_auth_id());
