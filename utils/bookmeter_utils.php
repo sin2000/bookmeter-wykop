@@ -5,6 +5,9 @@ require_once 'counter_file.php';
 
 class bookmeter_utils
 {
+  private $last_entry = null;
+  private $counter_source = '';
+
   public function get_counter($tag_name)
   {
     $cf = new counter_file;
@@ -37,30 +40,42 @@ class bookmeter_utils
 
     $api_counter = $this->get_counter_from_entries($wdata, $counter_in_file);
 
-    $counter = $counter_in_file > $api_counter ? $counter_in_file : $api_counter;
+    if($counter_in_file >= $api_counter)
+    {
+      $counter = $counter_in_file;
+      $this->counter_source = 'plik';
+    }
+    else
+    {
+      $counter = $api_counter;
+      $this->counter_source = 'wpis z api';
+    }
 
     return $counter;
   }
 
   public function get_counter_from_entries($entries, $counter_in_file)
   {
-    $counter = -1;
+    $counter = 0;
     $numberless_books = 0;
+    $last_counter = $counter_in_file;
     if(isset($entries) && is_array($entries))
     {
       foreach ($entries as $entry)
       {
+        $this->last_entry = $entry;
+
         $body = $entry['body'] ?? '';
-        $counter = $this->find_counter_in_body($body);
-        if($counter != -1 && $counter >= $counter_in_file)
-        {
+        $counter_obj = $this->find_counter_in_body($body);
+        $counter = $counter_obj['counter'];
+
+        if($counter != 0 && ($counter != $last_counter || $counter_obj['sign'] == '-'))
           break;
-        }
-        else
-        {
-          if($this->body_contains_book_entry($body))
-            $numberless_books++;
-        }
+
+        $last_counter = $counter;
+
+        if($this->body_contains_book_entry($body))
+          $numberless_books++;
       }
     }
 
@@ -75,16 +90,32 @@ class bookmeter_utils
     $cf->set_counter_value($counter);
   }
 
+  public function get_counter_source()
+  {
+    $id = $this->last_entry['id'] ?? '';
+    $date = $this->last_entry['date'] ?? '';
+    $login = $this->last_entry['author']['login'] ?? '';
+
+    $tmp = 'źródło licznika: ' . $this->counter_source;
+    $tmp .= '; ostatni spr. wpis - ' . $id . ' ' . $date . ' ' . $login;
+
+    return $tmp;
+  }
+
   private function find_counter_in_body($body)
   {
+    $obj = ['sign' => '', 'counter' => 0];
+
     $matches = array();
-    if(preg_match('/^[ ]*\d+[ ]*[\+\-][ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
+    if(preg_match('/^[ ]*\d+[ ]*([\+\-])[ ]*\d+[ ]*=[ ]*(\d+)[ ]*$/m', $body, $matches))
     {
-      $counter = $matches[1] ?? -1;
-      return $counter;
+      $obj['sign'] = $matches[1] ?? '';
+      $obj['counter'] = $matches[2] ?? -1;
+      
+      return $obj;
     }
 
-    return -1;
+    return $obj;
   }
 
   private function body_contains_book_entry($body)
