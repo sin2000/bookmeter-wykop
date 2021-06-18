@@ -1,6 +1,7 @@
 <?php
 
 require_once 'confidential_vars.php';
+require_once 'error_log_file.php';
 
 class wykop_api
 {
@@ -94,7 +95,9 @@ class wykop_api
       CURLOPT_AUTOREFERER        => true,
       CURLOPT_CONNECTTIMEOUT     => 15,
       CURLOPT_TIMEOUT            => $timeout,
-      CURLOPT_MAXREDIRS          => 3
+      CURLOPT_MAXREDIRS          => 3,
+      CURLOPT_IPRESOLVE          => CURL_IPRESOLVE_V4,
+      CURLOPT_RESOLVE            => ['a2.wykop.pl:443:51.83.237.192,51.83.237.191,51.83.238.216']
     );
 
     if($post_array !== null)
@@ -137,6 +140,9 @@ class wykop_api
     $result['errno'] = $err;
     $result['errmsg'] = $errmsg;
     $result['content'] = $content;
+
+    if($errmsg != '')
+      error_log_file::append('curl error - ' . $errmsg);
 
     return $result;
   }

@@ -101,7 +101,7 @@ if(isset($add_res->content['error']['message_pl']) && $add_res->content['error']
 
 $bmu->set_counter($predicted_counter);
 
-user_log_file::append($app->get_session_login_name() . ' counter: ' . $predicted_counter);
+user_log_file::append($app->get_session_login_name() . ' licznik: ' . $predicted_counter . ' ' . $bmu->get_counter_source());
 
 $bm_entry->save_settings();
 Csrf::removeToken('index');
