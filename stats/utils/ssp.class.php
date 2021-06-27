@@ -70,7 +70,7 @@ class SSP {
 	 *     * db   - database name
 	 *     * user - user name
 	 *     * pass - user password
-	 *  @return resource PDO connection
+	 *  @return PDO PDO connection
 	 */
 	static function db ( $conn )
 	{
@@ -229,6 +229,44 @@ class SSP {
 		return $where;
 	}
 
+		/**
+	 * Searching / Filtering
+	 *
+	 * Construct the WHERE clause for server-side processing SQL query.
+	 *
+	 *  @param  array $filter filter information array
+	 *  @param  array $bindings Array of values for PDO bindings, used in the
+	 *    sql_exec() function
+	 *  @return string SQL where clause without 'WHERE' keyword
+	 */
+	static function adv_filter ( $filter, &$bindings )
+	{
+		$column = $filter['column'];
+		$op = $filter['operator'];
+		$values = $filter['values'];
+
+		$colfilter = [];
+		$values_count = count($values);
+		foreach($values as $val)
+    {
+			switch($op)
+			{
+				case '<>':
+					if(!empty($val))
+					{
+						$binding = self::bind($bindings, $val, PDO::PARAM_STR);
+						$colfilter[] = "LOWER(`" . $column . "`)" . $op . 'LOWER(' . $binding . ')';
+					}
+				break;
+			}
+		}
+
+		$where = implode(' AND ', $colfilter);
+		if($where)
+			$where = '(' . $where . ')';
+
+		return $where;
+	}
 
 	/**
 	 * Perform the SQL queries needed for an server-side processing requested,
@@ -294,55 +332,29 @@ class SSP {
 
 	/**
 	 * The difference between this method and the `simple` one, is that you can
-	 * apply additional `where` conditions to the SQL queries. These can be in
-	 * one of two forms:
-	 *
-	 * * 'Result condition' - This is applied to the result set, but not the
-	 *   overall paging information query - i.e. it will not effect the number
-	 *   of records that a user sees they can have access to. This should be
-	 *   used when you want apply a filtering condition that the user has sent.
-	 * * 'All condition' - This is applied to all queries that are made and
-	 *   reduces the number of records that the user can access. This should be
-	 *   used in conditions where you don't want the user to ever have access to
-	 *   particular records (for example, restricting by a login id).
+	 * apply additional `where` conditions to the SQL queries.
 	 *
 	 *  @param  array $request Data sent to server by DataTables
 	 *  @param  array|PDO $conn PDO connection resource or connection parameters array
 	 *  @param  string $table SQL table to query
 	 *  @param  string $primaryKey Primary key of the table
 	 *  @param  array $columns Column information array
-	 *  @param  string $whereResult WHERE condition to apply to the result set
-	 *  @param  string $whereAll WHERE condition to apply to all queries
+	 *  @param  string $adv_filter condition to apply to all queries
 	 *  @return array          Server-side processing response array
 	 */
-	static function complex ( $request, $conn, $table, $primaryKey, $columns, $whereResult=null, $whereAll=null )
+	static function complex($request, $conn, $table, $primaryKey, $columns, $adv_filter = null)
 	{
 		$bindings = array();
 		$db = self::db( $conn );
-		$localWhereResult = array();
-		$localWhereAll = array();
-		$whereAllSql = '';
 
 		// Build the SQL query string from the request
 		$limit = self::limit( $request, $columns );
 		$order = self::order( $request, $columns );
 		$where = self::filter( $request, $columns, $bindings );
-
-		$whereResult = self::_flatten( $whereResult );
-		$whereAll = self::_flatten( $whereAll );
-
-		if ( $whereResult ) {
-			$where = $where ?
-				$where .' AND '.$whereResult :
-				'WHERE '.$whereResult;
-		}
-
-		if ( $whereAll ) {
-			$where = $where ?
-				$where .' AND '.$whereAll :
-				'WHERE '.$whereAll;
-
-			$whereAllSql = 'WHERE '.$whereAll;
+		if($adv_filter)
+		{
+			$addwhere = self::adv_filter($adv_filter, $bindings);
+			$where = $where ? $where . ' AND ' . $addwhere : 'WHERE ' . $addwhere;
 		}
 
 		// Main query to actually get the data
@@ -363,10 +375,9 @@ class SSP {
 		$recordsFiltered = $resFilterLength[0][0];
 
 		// Total data set length
-		$resTotalLength = self::sql_exec( $db, $bindings,
+		$resTotalLength = self::sql_exec( $db, null,
 			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table` ".
-			$whereAllSql
+			 FROM   `$table`"
 		);
 		$recordsTotal = $resTotalLength[0][0];
 
@@ -406,7 +417,7 @@ class SSP {
 	 * @param  array $sql_details SQL server connection details array, with the
 	 *   properties:
 	 *     * filepath
-	 * @return resource Database connection handle
+	 * @return PDO Database connection handle
 	 */
 	static function sql_connect ( $sql_details )
 	{
@@ -440,7 +451,7 @@ class SSP {
 	/**
 	 * Execute an SQL query on the database
 	 *
-	 * @param  resource $db  Database handler
+	 * @param  PDO $db  Database handler
 	 * @param  array    $bindings Array of PDO binding values from bind() to be
 	 *   used for safely escaping strings. Note that this can be given as the
 	 *   SQL query string if no bindings are required.

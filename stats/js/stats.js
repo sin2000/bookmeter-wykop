@@ -1,11 +1,35 @@
 $(document).ready(function () {
 
+  function create_cookie(name, value, days) {
+    var expires;
+
+    if(days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toGMTString();
+    }
+    else {
+      expires = "";
+    }
+    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + expires + "; path=/; secure";
+  }
+
+  function validate_logins() {
+    var elem = $("#ignored_logins");
+    if((/^[a-zA-Z0-9 _-]*$/).test(elem.val()) == false) {
+      elem[0].setCustomValidity("bad logins");
+    }
+    else {
+      elem[0].setCustomValidity("");
+    }
+  }
+
   $("#bookmeter_srv_grid tfoot th").each(function() {
     $(this).html('<input class="column_search" type="text" width="10%" placeholder="Filtr" />');
   });
 
   // DataTable
-  $("#bookmeter_srv_grid").DataTable({
+  var table = $("#bookmeter_srv_grid").DataTable({
     deferRender: true,
     processing: true,
     searchDelay: 500,
@@ -56,5 +80,26 @@ $(document).ready(function () {
         });
       });
     }
+  });
+
+  $("#adv_filter_form").submit(function(event) {
+    event.preventDefault();
+
+    $("#apply_adv_filters_button").prop("disabled", true);
+
+    validate_logins();
+
+    var form = this;
+    if(form.checkValidity() === true) {
+
+      var ignored_logins_value = $("#ignored_logins").val().trim();
+      create_cookie("setting_ignored_logins", ignored_logins_value, 600);
+      table.ajax.reload(function() { 
+        setTimeout(function() {
+          $("#apply_adv_filters_button").prop("disabled", false);
+        }, 700);
+      });
+    }
+    form.classList.add("was-validated");
   });
 });

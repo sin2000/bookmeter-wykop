@@ -10,6 +10,7 @@ class stats_utils
   private const data_dir = '../data';
   private $editions = null;
   private $bm_current_edition = null;
+  private $setting_ingored_logins_key = 'setting_ignored_logins';
 
   public function __construct($edition)
   {    
@@ -91,6 +92,34 @@ class stats_utils
     }
 
     return $end_time;
+  }
+
+  public function get_ignored_logins()
+  {
+    if(empty($_COOKIE[$this->setting_ingored_logins_key]) == false)
+    {
+      $ign_logins = trim($_COOKIE[$this->setting_ingored_logins_key]);
+      if($this->validate_ignored_logins($ign_logins) != '')
+        $ign_logins = '';
+
+      return $ign_logins;
+    }
+
+    return '';
+  }
+
+  private function validate_ignored_logins($ignored_logins)
+  {
+    if(empty($ignored_logins))
+      return '';
+
+    if(strlen($ignored_logins) > 2000)
+      return 'ignorowane loginy mogą zawierać maksymalnie 2000 znaków';
+
+    if(preg_match('/^[a-zA-Z0-9 _-]*$/', $ignored_logins) == false)
+      return 'nieprawidłowe loginy. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znaki _ i -';
+
+    return '';
   }
 }
 

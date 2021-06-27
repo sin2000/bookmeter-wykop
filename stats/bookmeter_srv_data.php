@@ -19,6 +19,7 @@
  */
 
 require '../utils/confidential_vars.php';
+require 'utils/stats_utils.php';
  
 // DB table to use
 $table = 'entry_view';
@@ -60,7 +61,17 @@ $columns = array(
 $sql_details = array(
     'filepath' => confidential_vars::stats_db_filepath,
 );
- 
+
+$ign_logins = (new stats_utils(stats_utils::bm_actual_edition))->get_ignored_logins();
+$adv_filter = null;
+if($ign_logins != '')
+{
+    $adv_filter = [
+        'column' => 'login_name',
+        'operator' => '<>',
+        'values' => explode(' ', $ign_logins)
+    ];
+}
  
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * If you just want to use the basic configuration for DataTables with PHP
@@ -70,5 +81,5 @@ $sql_details = array(
 require('utils/ssp.class.php');
  
 echo json_encode(
-    SSP::simple( $_GET, $sql_details, $table, $primaryKey, $columns )
+    SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $adv_filter)
 );

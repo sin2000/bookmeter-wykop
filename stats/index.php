@@ -11,6 +11,7 @@ $statu = new stats_utils(stats_utils::bm_actual_edition);
 $edition_start_date = htmlspecialchars($statu->get_edition_start_date(true));
 $edition_end_date = htmlspecialchars($statu->get_edition_end_date(true));
 $undetected_filepath = $statu->get_undetected_filepath();
+$ignored_logins = $statu->get_ignored_logins();
 
 $bmdb = new bm_database();
 $last_upd_arr = $bmdb->fetch_last_update_times();
@@ -105,6 +106,32 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
       </tfoot>
     </table>
 
+    <form id="adv_filter_form" class="mt-3" action="apply_adv_filter.php" method="POST" class="needs-validation" novalidate>
+
+      <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="collapse" data-target="#collapseContent" aria-expanded="false" aria-controls="collapseContent">
+        Dodatkowe opcje filtrowania
+      </button>
+      <div class="collapse" id="collapseContent">
+
+        <div class="card card-body pt-1">
+          <div class="form-row align-items-end">
+            <div class="col-6 mb-2">
+              <label for="ignored_logins" class="col-form-label pb-1">Ukryj loginy:</label>
+              <input id="ignored_logins" type="text" name="ignored_logins" class="form-control" maxlength="2000" value="<?php echo $ignored_logins ?>" placeholder="tutaj wstaw listę loginów rozdzieloną spacjami">
+              <div class="invalid-tooltip">
+                Nieprawidłowe dane. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znaki _ i -
+              </div>
+            </div>
+            <div class="col-auto mb-2">
+              <button id="apply_adv_filters_button" class="btn btn-primary pl-3 pr-3" type="submit">Zastosuj</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+
     <footer class="mt-4 mb-4">
       <div class="container text-center">
         <span class="text-muted"><?php echo site_globals::$footer_info ?></span>
@@ -116,7 +143,7 @@ $last_upd_arr = $bmdb->fetch_last_update_times();
   <script src="../js/jquery-3.5.1.min.js"></script>
   <script src="../js/bootstrap.bundle.min.js?v=2"></script>
   <script type="text/javascript" src="../js/datatables.min.js?v=2"></script>
-  <script src="./js/stats.js?v=3"></script>
+  <script src="./js/stats.js?v=4"></script>
 </body>
 
 </html>
