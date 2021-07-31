@@ -187,6 +187,28 @@ foreach($genre_list as $genre)
         </div>
       </div>
 
+      <div class="mb-1">
+        <button class="btn btn-light btn-sm dropdown-toggle mb-1" type="button" data-toggle="collapse" data-target="#collapse_content" aria-expanded="false" aria-controls="collapse_content">
+          Inne pola...
+        </button>
+        <div class="collapse mb-2" id="collapse_content">
+          <div class="card card-body pt-1">
+            <div class="form-row">
+              <div class="col-md">
+                <label for="translator_input" class="col-form-label pb-1">Tłumacz:</label>
+                <input id="translator_input" type="text" name="translator_input" class="form-control" maxlength="3000">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md">
+                <label for="publisher_input" class="col-form-label pb-1">Wydawnictwo:</label>
+                <input id="publisher_input" type="text" name="publisher_input" class="form-control" maxlength="3000">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="descr_input">Opis</label>

@@ -9,6 +9,8 @@ class bookmeter_entry
   private $author;
   private $genre;
   private $isbn;
+  private $translator;
+  private $publisher;
   private $descr;
   private $additional_tags;
   private $img_file;
@@ -29,6 +31,14 @@ class bookmeter_entry
   public function compose_msg($counter)
   {
     $prev_counter = $counter - 1;
+
+    $translator_row = '';
+    if(empty($this->translator) == false)
+      $translator_row = $this->format_label('Tłumacz:') . $this->translator . "\n";
+
+    $publisher_row = '';
+    if(empty($this->publisher) == false)
+      $publisher_row = $this->format_label('Wydawnictwo:') . $this->publisher . "\n";
 
     $isbn_row = '';
     if(empty($this->isbn) == false)
@@ -53,6 +63,8 @@ class bookmeter_entry
     . $this->format_label('Autor:') . $this->author . "\n"
     . $this->format_label('Gatunek:') . $this->genre . "\n"
     . $isbn_row
+    . $translator_row
+    . $publisher_row
     . $this->format_label('Ocena:') . $rate_out . "\n\n"
     . $this->descr . "\n\n"
     . ($this->add_ad == true ? ($ad . "\n\n") : "")
@@ -73,6 +85,14 @@ class bookmeter_entry
       return $err_msg;
 
     $err_msg = $this->error_if_empty($this->genre, 'gatunek jest wymagany');
+    if($err_msg != '')
+      return $err_msg;
+
+    $err_msg = $this->validate_translator();
+    if($err_msg != '')
+      return $err_msg;
+
+    $err_msg = $this->validate_publisher();
     if($err_msg != '')
       return $err_msg;
 
@@ -122,6 +142,18 @@ class bookmeter_entry
 
     $this->genre = $this->strip_unsafe_chars(trim($genre_tmp));
     $this->genre = $this->replace_tabs($this->genre);
+  }
+
+  public function set_translator($tr)
+  {
+    $this->translator = $this->strip_unsafe_chars(trim($tr));
+    $this->translator = $this->replace_tabs($this->translator);
+  }
+
+  public function set_publisher($publisher)
+  {
+    $this->publisher = $this->strip_unsafe_chars(trim($publisher));
+    $this->publisher = $this->replace_tabs($this->publisher);
   }
 
   public function set_isbn($isbn)
@@ -288,6 +320,28 @@ class bookmeter_entry
       if($this->img_file_type != 'image/jpeg' && $this->img_file_type != 'image/png')
         return 'dozwolone typy plików to JPG i PNG';
     }
+
+    return '';
+  }
+
+  private function validate_translator()
+  {
+    if(empty($this->translator))
+      return '';
+
+    if(mb_strlen($this->translator) > 3000)
+      return 'pole Tłumacz może zawierać maksymalnie 3000 znaków';
+
+    return '';
+  }
+
+  private function validate_publisher()
+  {
+    if(empty($this->publisher))
+      return '';
+
+    if(mb_strlen($this->publisher) > 3000)
+      return 'pole Wydawnictwo może zawierać maksymalnie 3000 znaków';
 
     return '';
   }

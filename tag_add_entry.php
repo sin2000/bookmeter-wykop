@@ -53,6 +53,8 @@ $bm_entry->set_title($_POST['title_input']);
 $bm_entry->set_author($_POST['author_input']);
 $bm_entry->set_genre($_POST['genre_select_input'], $_POST['genre_input']);
 $bm_entry->set_isbn($_POST['isbn_input']);
+$bm_entry->set_translator($_POST['translator_input']);
+$bm_entry->set_publisher($_POST['publisher_input']);
 $bm_entry->set_description($_POST['descr_input']);
 $bm_entry->set_additional_tags($_POST['tags_input']);
 $bm_entry->set_img_file($_FILES['file_input']);
