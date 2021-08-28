@@ -259,6 +259,30 @@ class summary_utils
 
     return $html;
   }
+  
+  public function get_top_popular_books()
+  {
+    $top_popular_books = $this->bmdb->get_top_popular_books();
+    $html = '';
+    $count = count($top_popular_books);
+    for($i = 0; $i < $count; ++$i)
+    {
+      $nr = $i + 1;
+      $entry = $top_popular_books[$i];
+      $title = htmlspecialchars($entry[0]);
+      $author = htmlspecialchars($entry[1]);
+      $book_count = htmlspecialchars($entry[2]);
+      $html .=
+        "<tr>
+        <th scope=\"row\">$nr</th>
+        <td>$title</td>
+        <td>$author</td>
+        <td>$book_count</td>
+        </tr>";
+    }
+
+    return $html;
+  }
 
   public function get_top_genres()
   {
