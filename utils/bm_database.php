@@ -237,6 +237,26 @@ class bm_database
 
     return $arr;
   }
+  
+    public function get_top_popular_books()
+  {
+    $sql = <<<SQL
+      SELECT authors, title, COUNT(id) FROM bm_entry
+      GROUP BY title
+      ORDER BY COUNT(id) DESC, authors, title
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1], $row[2] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
 
   public function get_top_genres()
   {
