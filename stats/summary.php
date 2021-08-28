@@ -33,6 +33,7 @@ $top_users_html = $summ_util->get_top_users();
 $top_books_html = $summ_util->get_top_books();
 $top_voted_books_html = $summ_util->get_top_voted_books();
 $top_authors_html = $summ_util->get_top_authors();
+$top_popular_books_html = $summ_util->get_top_popular_books();
 $top_genres_html = $summ_util->get_top_genres();
 $sex_stats = $summ_util->get_sex_stats();
 $book_by_sex = $summ_util->get_book_count_by_sex();
@@ -177,7 +178,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         </tr>
       </thead>
       <tbody>
-        <?php echo $top_authors_html ?>
+        <?php echo $top_popular_books_html ?>
       </tbody>
       </table>
 
