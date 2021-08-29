@@ -225,6 +225,7 @@ class summary_utils
       $entry = $top_voted[$i];
       $author = htmlspecialchars($entry[0]);
       $title = htmlspecialchars($entry[1]);
+      var_dump(round($entry[2], 2));
       $vote_count = htmlspecialchars($entry[2]);
       $html .=
         "<tr>
