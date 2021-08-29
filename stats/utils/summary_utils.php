@@ -272,12 +272,18 @@ class summary_utils
       $title = htmlspecialchars($entry[0]);
       $author = htmlspecialchars($entry[1]);
       $book_count = htmlspecialchars($entry[2]);
+      $avg_rate = htmlspecialchars($entry[3]);
+      $vote_count = htmlspecialchars($entry[4]);
+      $entry_id = urlencode($entry[5]);
+      
       $html .=
         "<tr>
         <th scope=\"row\">$nr</th>
-        <td>$title</td>
+        <td><a href=\"https://www.wykop.pl/wpis/$entry_id/\" target=\"_blank\">$title</a></td>
         <td>$author</td>
         <td>$book_count</td>
+        <td>$avg_rate</td>
+        <td>$vote_count</td>
         </tr>";
     }
 
