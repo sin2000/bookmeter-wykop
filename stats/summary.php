@@ -175,6 +175,8 @@ $worst_books_html = $summ_util->get_top_books(true);
           <th scope="col">Autor</th>
           <th scope="col">Tytuł</th>
           <th scope="col">Liczba wpisów</th>
+          <th scope="col">Średnia ocena</th>
+          <th scope="col">Liczba plusów (razem)</th>
         </tr>
       </thead>
       <tbody>
