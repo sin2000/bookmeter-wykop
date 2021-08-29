@@ -225,7 +225,6 @@ class summary_utils
       $entry = $top_voted[$i];
       $author = htmlspecialchars($entry[0]);
       $title = htmlspecialchars($entry[1]);
-      var_dump(round($entry[2], 2));
       $vote_count = htmlspecialchars($entry[2]);
       $html .=
         "<tr>
@@ -273,7 +272,7 @@ class summary_utils
       $title = htmlspecialchars($entry[0]);
       $author = htmlspecialchars($entry[1]);
       $book_count = htmlspecialchars($entry[2]);
-      $avg_rate = htmlspecialchars($entry[3]);
+      $avg_rate = htmlspecialchars(round($entry[3], 1));;
       $vote_count = htmlspecialchars($entry[4]);
       $entry_id = urlencode($entry[5]);
       
