@@ -242,7 +242,7 @@ class bm_database
   {
     $sql = <<<SQL
       SELECT authors, title, COUNT(id) FROM bm_entry
-      GROUP BY title
+      GROUP BY authors, title
       ORDER BY COUNT(id) DESC, authors, title
       LIMIT 10
     SQL;
@@ -251,7 +251,7 @@ class bm_database
     $arr = [];
     while($row = $res->fetchArray(SQLITE3_NUM))
     {
-      array_push($arr, [ $row[0], $row[1], $row[2] ]);
+      array_push($arr, [ $row[0], $row[1], $row[2], $row[3] ]);
     }
     $res->finalize();
 
