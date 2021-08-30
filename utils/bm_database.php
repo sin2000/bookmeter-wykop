@@ -243,6 +243,7 @@ class bm_database
     $sql = <<<SQL
       SELECT authors, title, COUNT(id), AVG(rate), SUM(vote_count), entry_id FROM bm_entry
       GROUP BY authors, title
+      HAVING COUNT(id) > 1
       ORDER BY COUNT(id) DESC, AVG(rate) DESC, SUM(vote_count) DESC, authors, title
       LIMIT 10
     SQL;

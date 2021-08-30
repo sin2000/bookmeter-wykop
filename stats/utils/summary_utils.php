@@ -269,8 +269,8 @@ class summary_utils
     {
       $nr = $i + 1;
       $entry = $top_popular_books[$i];
-      $title = htmlspecialchars($entry[0]);
-      $author = htmlspecialchars($entry[1]);
+      $author = htmlspecialchars($entry[0]);
+      $title = htmlspecialchars($entry[1]);
       $book_count = htmlspecialchars($entry[2]);
       $avg_rate = htmlspecialchars(round($entry[3], 1));;
       $vote_count = htmlspecialchars($entry[4]);
@@ -279,8 +279,8 @@ class summary_utils
       $html .=
         "<tr>
         <th scope=\"row\">$nr</th>
-        <td><a href=\"https://www.wykop.pl/wpis/$entry_id/\" target=\"_blank\">$title</a></td>
         <td>$author</td>
+        <td><a href=\"https://www.wykop.pl/wpis/$entry_id/\" target=\"_blank\">$title</a></td>
         <td>$book_count</td>
         <td>$avg_rate</td>
         <td>$vote_count</td>
