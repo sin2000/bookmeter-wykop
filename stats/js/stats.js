@@ -84,13 +84,11 @@ $(document).ready(function () {
 
   $("#adv_filter_form").submit(function(event) {
     event.preventDefault();
-
-    $("#apply_adv_filters_button").prop("disabled", true);
-
     validate_logins();
-
     var form = this;
     if(form.checkValidity() === true) {
+
+      $("#apply_adv_filters_button").prop("disabled", true);
 
       var ignored_logins_value = $("#ignored_logins").val().trim();
       create_cookie("setting_ignored_logins", ignored_logins_value, 600);
