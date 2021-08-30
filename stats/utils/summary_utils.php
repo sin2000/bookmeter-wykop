@@ -259,6 +259,36 @@ class summary_utils
 
     return $html;
   }
+  
+  public function get_top_popular_books()
+  {
+    $top_popular_books = $this->bmdb->get_top_popular_books();
+    $html = '';
+    $count = count($top_popular_books);
+    for($i = 0; $i < $count; ++$i)
+    {
+      $nr = $i + 1;
+      $entry = $top_popular_books[$i];
+      $title = htmlspecialchars($entry[0]);
+      $author = htmlspecialchars($entry[1]);
+      $book_count = htmlspecialchars($entry[2]);
+      $avg_rate = htmlspecialchars(round($entry[3], 1));;
+      $vote_count = htmlspecialchars($entry[4]);
+      $entry_id = urlencode($entry[5]);
+      
+      $html .=
+        "<tr>
+        <th scope=\"row\">$nr</th>
+        <td><a href=\"https://www.wykop.pl/wpis/$entry_id/\" target=\"_blank\">$title</a></td>
+        <td>$author</td>
+        <td>$book_count</td>
+        <td>$avg_rate</td>
+        <td>$vote_count</td>
+        </tr>";
+    }
+
+    return $html;
+  }
 
   public function get_top_genres()
   {

@@ -33,6 +33,7 @@ $top_users_html = $summ_util->get_top_users();
 $top_books_html = $summ_util->get_top_books();
 $top_voted_books_html = $summ_util->get_top_voted_books();
 $top_authors_html = $summ_util->get_top_authors();
+$top_popular_books_html = $summ_util->get_top_popular_books();
 $top_genres_html = $summ_util->get_top_genres();
 $sex_stats = $summ_util->get_sex_stats();
 $book_by_sex = $summ_util->get_book_count_by_sex();
@@ -126,7 +127,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         <tr>
           <th scope="col">Miejsce</th>
           <th scope="col">Login</th>
-          <th scope="col">Ilość dodanych książek</th>
+          <th scope="col">Liczba dodanych książek</th>
         </tr>
       </thead>
       <tbody>
@@ -151,7 +152,7 @@ $worst_books_html = $summ_util->get_top_books(true);
       </tbody>
       </table>
 
-      <div class="mt-4"><b>TOP 10 dodanych książek z największą ilością zebranych plusów:</b></div>
+      <div class="mt-4"><b>TOP 10 dodanych książek z największą liczbą zebranych plusów:</b></div>
       <table class="table table-sm mt-2 table-hover">
       <thead class="thead-light">
         <tr>
@@ -165,6 +166,23 @@ $worst_books_html = $summ_util->get_top_books(true);
         <?php echo $top_voted_books_html ?>
       </tbody>
       </table>
+      
+      <div class="mt-4"><b>Najpopularniejsze książki w tej edycji:</b></div>
+      <table class="table table-sm mt-2 table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Miejsce</th>
+          <th scope="col">Autor</th>
+          <th scope="col">Tytuł</th>
+          <th scope="col">Liczba wpisów</th>
+          <th scope="col">Średnia ocena</th>
+          <th scope="col">Liczba plusów (razem)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php echo $top_popular_books_html ?>
+      </tbody>
+      </table>
 
       <div class="mt-4"><b>Najpopularniejsi autorzy w tej edycji:</b></div>
       <table class="table table-sm mt-2 table-hover">
@@ -172,7 +190,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         <tr>
           <th scope="col">Miejsce</th>
           <th scope="col">Autor</th>
-          <th scope="col">Ilość dodanych książek</th>
+          <th scope="col">Liczba dodanych książek</th>
         </tr>
       </thead>
       <tbody>
@@ -186,7 +204,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         <tr>
           <th scope="col">Miejsce</th>
           <th scope="col">Gatunek</th>
-          <th scope="col">Ilość dodanych książek</th>
+          <th scope="col">Liczba dodanych książek</th>
         </tr>
       </thead>
       <tbody>
