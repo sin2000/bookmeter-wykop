@@ -91,12 +91,25 @@ class SSP {
 	 *  @param  array $columns Column information array
 	 *  @return string SQL limit clause
 	 */
-	static function limit ( $request, $columns )
+	static function limit($request, $columns)
 	{
 		$limit = '';
 
-		if ( isset($request['start']) && $request['length'] != -1 ) {
-			$limit = "LIMIT ".intval($request['start']).", ".intval($request['length']);
+		if(isset($request['start']) && $request['length'] != -1 )
+		{
+			$start = intval($request['start']);
+			if($start < 0 || $start > 999999999)
+				$start = 0;
+
+			$len = intval($request['length']);
+			if($len < 0 || $len > 200)
+				$len = 1;
+
+			$limit = "LIMIT " . $start .", " . $len;
+		}
+		else
+		{
+			$limit = "LIMIT 0, 1";
 		}
 
 		return $limit;
