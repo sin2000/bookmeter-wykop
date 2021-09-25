@@ -195,6 +195,7 @@ class bookmeter_entry
   {
     $this->rate = $this->strip_unsafe_chars($rate);
     $this->rate = $this->replace_tabs($this->rate);
+    $this->rate = intval($this->rate);
   }
 
   public function set_bold_labels($bold_labels)
@@ -370,7 +371,11 @@ class bookmeter_entry
 
   private function error_if_nonum($field, $int_min, $int_max, $errmsg)
   {
-    if($field == '' || is_numeric($field) == false || $field < $int_min || $field > $int_max)
+    if($field == '' || is_numeric($field) == false)
+      return $errmsg;
+
+    $int_field = intval($field);
+    if($int_field < $int_min || $int_field > $int_max)
       return $errmsg;
 
     return '';
