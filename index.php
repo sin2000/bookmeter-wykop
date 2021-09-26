@@ -11,8 +11,9 @@ session_start();
 
 $app = new app_auth;
 $app->redirect_to_login();
+
+$csrf_token = Csrf::getInputToken('index', 18000); // 5h=18000s; Uses setcookie so this must be before output
 $login_name = htmlspecialchars($app->get_session_login_name());
-Csrf::removeToken('index');
 $book_entry = new bookmeter_entry;
 $book_entry->load_settings();
 $save_tags_check_value = $book_entry->get_save_additional_tags() ? "checked" : "";
@@ -120,7 +121,7 @@ foreach($genre_list as $genre)
     </div>
 
     <div id="timeout_alert" class="alert alert-danger hide" role="alert">
-      Wysłanie danych nie powiodło się - sesja wygasła. <b>Odśwież stronę</b> i spróbuj ponownie.
+      Wysłanie danych nie powiodło się - sesja wygasła. Upewnij się, że masz włączone ciasteczka. <b>Odśwież stronę</b> i spróbuj ponownie.
     </div>
 
     <div id="srv_err_alert" class="alert alert-warning hide" role="alert">
@@ -129,7 +130,7 @@ foreach($genre_list as $genre)
 
     <form id="add_entry_form" action="tag_add_entry.php" method="POST" class="needs-validation" novalidate>
 
-      <?php echo Csrf::getInputToken('index', 9999) ?>
+      <?php echo $csrf_token ?>
 
       <div class="form-row">
         <div class="col-md mb-3">
