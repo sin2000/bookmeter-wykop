@@ -1,6 +1,5 @@
 <?php
 
-require_once 'utils/csrf.php';
 require_once 'utils/wykop_api.php';
 require_once 'utils/bookmeter_utils.php';
 require_once 'utils/app_auth.php';
@@ -8,16 +7,16 @@ require_once 'utils/site_globals.php';
 require_once 'utils/bookmeter_entry.php';
 require_once 'utils/user_log_file.php';
 require_once 'utils/error_log_file.php';
-use steveclifton\phpcsrftokens\Csrf;
 
-session_start();
-if(Csrf::verifyToken('index') == false)
+if(!isset($_COOKIE[session_name()]))
 {
-  error_log_file::append('tag_add_entry 404response - csrf verify failed');
+  error_log_file::append('tag_add_entry.php 404');
 
   http_response_code(404);
   return;
 }
+
+session_start();
 
 function success_response()
 {

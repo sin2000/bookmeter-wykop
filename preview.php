@@ -1,17 +1,19 @@
 <?php
 
-require_once 'utils/csrf.php';
 require_once 'utils/bookmeter_utils.php';
 require_once 'utils/site_globals.php';
 require_once 'utils/bookmeter_entry.php';
-use steveclifton\phpcsrftokens\Csrf;
+require_once 'utils/error_log_file.php';
 
-session_start();
-if(Csrf::verifyToken('index') == false)
+if(!isset($_COOKIE[session_name()]))
 {
+  error_log_file::append('preview.php 404');
+
   http_response_code(404);
   return;
 }
+
+session_start();
 
 function success_response($body)
 {
