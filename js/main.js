@@ -352,6 +352,122 @@
     input_obj.val(text);
     set_selection(input_obj[0], select.start, select.end);
   }
+
+  $("#search_form").submit(function(event) {
+    event.preventDefault();
+
+    var form = this;
+    if(form.checkValidity() === false) {
+      form.classList.add("was-validated");
+      return;
+    }
+
+    find_book_details($("#search_input").val());
+  });
+
+  function book_selected() {
+    var idx = $(this).prop("id").split("_")[1];
+    var book = window.book_details[idx];
+
+    $("#title_input").val(book.title);
+    $("#author_input").val(book.authors);
+    $('#genre_select_input option[value="inny..."]').prop("selected", true);
+    $("#genre_select_input").change();
+    $("#genre_input").val(book.genre);
+    $("#isbn_input").val(book.isbn);
+    $("#translator_input").val(book.translator);
+    $("#publisher_input").val(book.publisher);
+    $("#image_url_input").val(get_book_image_url(book.image_url, false));
+
+    $("#search_content").addClass("d-none");
+    $("#add_entry_form").removeClass("d-none");
+
+    $("#book_list").empty();
+    window.book_details = null;
+
+    scroll_top();
+  }
+
+  function get_book_image_url(url_fragment, is_small) {
+    var prefix = "https://s.lubimyczytac.pl/upload/books/";
+    var suffix = "70x100.jpg";
+
+    if(is_small == false) {
+      return (url_fragment == null) ? "" : (prefix + url_fragment);
+    }
+    else {
+      if(url_fragment == null)
+        return "img/defbook.png";
+    }
+
+    var idx = url_fragment.lastIndexOf("-");
+    if(idx >= 0) {
+      return prefix + url_fragment.substr(0, idx + 1) + suffix;
+    }
+
+    idx = url_fragment.lastIndexOf("/");
+    if(idx >= 0) {
+      return prefix + url_fragment.substr(0, idx + 1) + suffix;
+    }
+
+    return "";
+  }
+
+  function show_book_details(details) {
+    $("#book_list").empty();
+
+    if(is_undefined(details) || details.length == 0) {
+      $("#book_not_found_div").show();
+    }
+    else {
+      window.book_details = details;
+      $("#book_not_found_div").hide();
+
+      for(var i = 0; i < details.length; ++i) {
+        var clone = $("#book_template").clone();
+        clone.prop("id", "book_" + i.toString());
+        clone.find(".book_img").prop("src", get_book_image_url(details[i].image_url, true));
+        clone.find(".book_title").text(details[i].title);
+        clone.find(".book_author").text(details[i].authors);
+        clone.find(".book_isbn").text(details[i].isbn);
+        clone.find(".book_genre").text(details[i].genre);
+        clone.find(".book_publisher").text(details[i].publisher);
+        $("#book_list").append(clone);
+        clone.removeClass("hide");
+      }
+
+      $(".book_item").click(book_selected);
+    }
+  }
+
+  function find_book_details(book_title) {
+
+    $("#spinner_modal").on("shown.bs.modal", function() {
+      $.ajax({
+        url: "book_details.php",
+        data: {
+          "title": book_title
+        },
+
+        success: function (response) {
+          show_book_details(response);
+          hide_spinner();
+        },
+        error: function () {
+          hide_spinner();
+          $("#timeout_alert").show();
+          scroll_top();
+        }
+      });
+    });
+
+    hide_server_error();
+    show_spinner();
+  }  
+
+  function autocomplete_book_selected(event, ui) {
+    find_book_details(ui.item.value);
+  }
   
   $("#success_modal_ok_btn").click(function() {
     location.reload();
@@ -534,6 +650,13 @@
     insert_text_from_src("descr_input", this);
   });
 
+  $("#show_main_form").click(function(e){
+    e.preventDefault();
+
+    $("#search_content").addClass("d-none");
+    $("#add_entry_form").removeClass("d-none");
+  });
+
   window.addEventListener("load", function() {
     document.querySelector(".custom-file-input").addEventListener("change", function(e) {
       var fileName = document.getElementById("file_input").files[0].name;
@@ -566,9 +689,15 @@
 
     get_internal_counter();
     load_autocomplete();
+    load_simple_autocomplete("search_input", "book_search.php", "title", 2);
+
     load_simple_autocomplete("genre_input", "autocomplete.php", "genre", 2);
     load_simple_autocomplete("author_input", "autocomplete.php", "authors", 3);
     load_simple_autocomplete("title_input", "autocomplete.php", "title", 3);
+
+    $("#search_input").on("autocompleteselect", autocomplete_book_selected);
+
+    $("#search_input").focus();
 
   },false);
 

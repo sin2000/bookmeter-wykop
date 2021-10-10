@@ -128,20 +128,78 @@ foreach($genre_list as $genre)
       Błąd serwera: <span id="srv_err_text"></span>
     </div>
 
-    <form id="add_entry_form" action="tag_add_entry.php" method="POST" class="needs-validation" novalidate>
+    <div class="form-row">
+      <div class="col-md mb-3">
+        <span class="align-middle">Przewidywany licznik:</span>
+        <div id="counter_spinner" class="spinner-border spinner-border-sm align-middle" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+        <span class="font-weight-bold align-middle" id="book_counter_input"></span>
+        <span class="align-middle small">(<a href="stats">statystyki</a>)</span>
+      </div>
+    </div>
+
+    <div id="search_content">
+
+      <form id="search_form" action="#" method="GET" class="needs-validation" novalidate>
+        <div class="form-row align-items-center">
+          <div class="col mt-3 mb-3 pr-0">
+            <input id="search_input" type="text" name="search_input" class="form-control" value="" placeholder="podaj tytuł..." maxlength="300" required>
+            <div class="invalid-tooltip">
+              Tytuł jest wymagany
+            </div>
+          </div>
+          <div class="col-auto mt-3 mb-3">
+            <button id="search_button" type="submit" class="btn btn-primary" aria-label="Szukaj całego tytułu" title="Szukaj całego tytułu">
+              <i class="fa fa-search" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <div id="book_details">
+        <div id="book_not_found_div" class="small alert alert-info hide" role="alert">
+          <b>Nie znaleziono książki</b>. Podaj minimum 2 znaki tytułu aby uzyskać podpowiedzi.
+          Wykorzystaj podpowiedzi tytułu aby móc znaleźć książki do wyboru.<br />
+          Tytuł musi być podany w całości.
+        </div>
+
+        <button id="book_template" type="button" class="book_item list-group-item list-group-item-action p-2 hide">
+          <div class="container pl-0 pr-0">
+            <div class="row row-cols-2 align-items-end">
+              <div class="col-auto pr-0">
+                <img src="" class="book_img d-block border float-left" alt="." width="70" height="100" referrerpolicy="no-referrer">
+              </div>
+              <div class="col-auto">
+                <div class="book_title font-weight-bold"></div>
+                <div class="book_author mb-1 small"></div>
+                <div class="small font-italic">ISBN: <span class="book_isbn"></span></div>
+              </div>
+              <div class="col-auto">
+                <div class="mt-1 small">Gatunek: <span class="book_genre"></span></div>
+                <div class="small">Wydawnictwo: <span class="book_publisher"></span></div>
+              </div>
+            </div>
+          </div>
+        </button>
+        
+        <div id="book_list" class="list-group">
+        </div>
+
+      </div>
+
+      <div class="form-row">
+        <div class="col-md mt-5 small">
+          <button id="show_main_form" class="btn btn-light btn-sm" type="button">Przejdź do edycji bez wyboru książki</button>
+        </div>
+      </div>
+
+    </div>
+
+    <form id="add_entry_form" action="tag_add_entry.php" method="POST" class="needs-validation d-none" novalidate>
 
       <?php echo $csrf_token ?>
 
-      <div class="form-row">
-        <div class="col-md mb-3">
-          <span class="align-middle">Przewidywany licznik:</span>
-          <div id="counter_spinner" class="spinner-border spinner-border-sm align-middle" role="status">
-            <span class="sr-only">Loading...</span>
-          </div>
-          <span class="font-weight-bold align-middle" id="book_counter_input"></span>
-          <span class="align-middle small">(<a href="stats">statystyki</a>)</span>
-        </div>
-      </div>
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="title_input">Tytuł</label>
@@ -213,7 +271,10 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="descr_input">Opis</label>
-          <textarea id="descr_input" class="form-control mb-1" name="descr_input" rows="3"></textarea>
+          <textarea id="descr_input" class="form-control mb-1" name="descr_input" rows="3" required></textarea>
+          <div class="invalid-tooltip">
+            Opis jest wymagany
+          </div>
           <button id="descr_bold_btn" type="button" class="btn btn-outline-secondary btn-minw-40" aria-label="Pogrubienie" title="Pogrubienie">
             <i class="fa fa-bold" aria-hidden="true"></i>
           </button>
@@ -427,7 +488,7 @@ foreach($genre_list as $genre)
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=8" type="text/javascript"></script>
+  <script src="./js/main.js?v=9" type="text/javascript"></script>
 </body>
 
 </html>
