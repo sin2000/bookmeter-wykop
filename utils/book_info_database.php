@@ -12,8 +12,6 @@ class book_info_database
 
   /** @var SQLite3 **/
   private $db;
-  /** @var SQLite3Result **/
-  private $tmpres = null;
 
   public function __construct()
   {
@@ -35,6 +33,12 @@ class book_info_database
     $item = $this->get_cached_item(book_info_database::title_cache_key, $orgfilter);
     if($item !== false)
       return $item;
+
+    $filter = $this->sanitize_title($filter);
+    $filter = $this->trim_nonalfanum($filter);
+    $flen = mb_strlen($filter);
+    if($flen < book_info_database::min_filter_length)
+      return [];
 
     $filter = $this->sanitize_filter($filter);
 
@@ -118,14 +122,44 @@ class book_info_database
 
   private function sanitize_filter($filter)
   {
-    $filter = $this->sanitize_title($filter);
-
     $filter = str_replace('"', '""', $filter);
     $arr = explode(' ', $filter);
     $filter = implode('" "', $arr);
     $filter = '"' . $filter . '"*';
 
     return $filter;
+  }
+
+  private function trim_nonalfanum($text)
+  {
+    $arr = mb_str_split($text, 1, 'UTF-8');
+    $arr_len = count($arr);
+    if($arr_len <= 1)
+      return $text;
+
+    $start = 0;
+    for($i = 0; $i < $arr_len; ++$i)
+    {
+      if(IntlChar::isalnum($arr[$i]))
+      {
+        $start = $i;
+        break;
+      }
+    }
+
+    $end = 0;
+    for($i = $arr_len - 1; $i >= 0; --$i)
+    {
+      if(IntlChar::isalnum($arr[$i]))
+      {
+        $end = $i + 1;
+        break;
+      }
+    }
+
+    $text = mb_substr($text, $start, $end - $start, "UTF-8");
+
+    return $text;
   }
 
   private function strip_unsafe_chars($str)

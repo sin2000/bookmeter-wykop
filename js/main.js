@@ -655,6 +655,7 @@
 
     $("#search_content").addClass("d-none");
     $("#add_entry_form").removeClass("d-none");
+    scroll_top();
   });
 
   window.addEventListener("load", function() {
