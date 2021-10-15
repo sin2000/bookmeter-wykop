@@ -2,28 +2,33 @@
 
 require_once 'utils/app_auth.php';
 require_once 'utils/site_globals.php';
+require_once 'utils/error_log_file.php';
 
 session_start();
+
+$app = new app_auth;
+$app->redirect_to_index_if_logged();
 
 $auth_id = $_GET["id"] ?? null;
 $connect_data = json_decode(base64_decode($_GET["connectData"] ?? null));
 $has_connect_data = !empty($connect_data->appkey) && !empty($connect_data->login)
   && !empty($connect_data->token) && !empty($connect_data->sign) && !empty($auth_id);
 
-$app = new app_auth;
 $wapi = new wykop_api;
 if($has_connect_data && $connect_data->appkey == $wapi->get_appkey() && $auth_id == $app->get_auth_id())
 {
+  $app->remove_auth_id_from_session();
   $sign_calc = md5($wapi->get_appsecret() . $connect_data->appkey . $connect_data->login . $connect_data->token);
   if(hash_equals($sign_calc, $connect_data->sign))
   {
-    $app->remove_auth_id_from_session();
     $app->set_auth_cookies($connect_data->login, $connect_data->token);
     $app->set_auth_to_session($connect_data->login, $connect_data->token);
     $app->redirect($app->get_current_base_url());
   }
 }
 
+error_log_file::append('login.php error');
+$app->remove_auth_id_from_session();
 $base_url = $app->get_current_base_url();
 
 ?>

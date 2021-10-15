@@ -2,6 +2,7 @@
 
 require_once 'wykop_api.php';
 include_once 'confidential_vars.php';
+require_once 'debug_log_file.php';
 
 class app_auth
 {
@@ -22,13 +23,19 @@ class app_auth
   public function redirect_to_login()
   {
     if($this->has_auth_in_session())
+    {
+      debug_log_file::append(__METHOD__, 'logged: '. $this->get_session_login_name());
       return;
+    }
 
     if($this->has_auth_cookies())
     {
       $this->set_auth_to_session($this->get_cookie_login_name(), $this->get_cookie_token());
       if($this->has_auth_in_session())
+      {
+        debug_log_file::append(__METHOD__, 'logged: '. $this->get_session_login_name());
         return;
+      }
     }
 
     $auth_id = urlencode($this->generate_auth_id());
@@ -37,6 +44,19 @@ class app_auth
     $redir_url = $wapi->get_login_connect_url($cur_url);
 
     $this->redirect($redir_url);
+  }
+
+  public function redirect_to_index_if_logged()
+  {
+    if($this->has_auth_in_session())
+      $this->redirect($this->get_current_base_url());
+
+    if($this->has_auth_cookies())
+    {
+      $this->set_auth_to_session($this->get_cookie_login_name(), $this->get_cookie_token());
+      if($this->has_auth_in_session())
+        $this->redirect($this->get_current_base_url());
+    }
   }
 
   public function remove_auth_data()
