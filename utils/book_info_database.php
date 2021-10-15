@@ -81,7 +81,7 @@ class book_info_database
     $sql = <<<SQL
       SELECT authors, title, genre, isbn, translator, publisher, image_url FROM book_info
       WHERE ltitle = LOWER(?)
-      ORDER BY isbn DESC, authors
+      ORDER BY authors NULLS LAST, isbn DESC
       LIMIT ?
     SQL;
 
