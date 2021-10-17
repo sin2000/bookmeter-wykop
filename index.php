@@ -262,19 +262,19 @@ $book_form_options = create_options_tags($book_entry->get_available_book_forms()
           <div class="card card-body pt-1">
             <div class="form-row">
               <div class="col-md">
-                <label for="translator_input" class="col-form-label pb-1">Tłumacz:</label>
+                <label for="translator_input" class="col-form-label pb-1">Tłumacz</label>
                 <input id="translator_input" type="text" name="translator_input" class="form-control" maxlength="3000">
               </div>
             </div>
             <div class="form-row">
               <div class="col-md">
-                <label for="publisher_input" class="col-form-label pb-1">Wydawnictwo:</label>
+                <label for="publisher_input" class="col-form-label pb-1">Wydawnictwo</label>
                 <input id="publisher_input" type="text" name="publisher_input" class="form-control" maxlength="3000">
               </div>
             </div>
             <div class="form-row">
               <div id="npages_container" class="col-md">
-                <label for="number_of_pages_input" class="col-form-label pb-1">Liczba stron:</label>
+                <label for="number_of_pages_input" class="col-form-label pb-1">Liczba stron</label>
                 <input id="number_of_pages_input" type="number" name="number_of_pages_input" class="form-control" min="1" max="9999" step="1" autocomplete="off">
                 <div class="invalid-tooltip">
                   Liczba stron musi być w przedziale od 1 do 9999
