@@ -7,6 +7,18 @@ require_once 'utils/bookmeter_entry.php';
 
 use steveclifton\phpcsrftokens\Csrf;
 
+function create_options_tags($values)
+{
+  $options = '';
+  foreach($values as $val)
+  {
+    $fval = htmlspecialchars($val);
+    $options .= '<option value="' . $fval . '">' . $fval . '</option>' . "\n";
+  }
+
+  return $options;
+}
+
 session_start();
 
 $app = new app_auth;
@@ -34,12 +46,8 @@ $genre_list = [
   'science fiction',
   'thriller',
 ];
-$genre_options = '';
-foreach($genre_list as $genre)
-{
-  $fgenre = htmlspecialchars($genre);
-  $genre_options .= '<option value="' . $fgenre . '">' . $fgenre . '</option>' . "\n";
-}
+$genre_options = create_options_tags($genre_list);
+$book_form_options = create_options_tags($book_entry->get_available_book_forms());
 
 ?>
 
@@ -144,7 +152,7 @@ foreach($genre_list as $genre)
       <form id="search_form" action="#" method="GET" class="needs-validation" novalidate>
         <div class="form-row align-items-center">
           <div class="col mt-3 mb-3 pr-0">
-            <input id="search_input" type="text" name="search_input" class="form-control" value="" placeholder="podaj tytuł..." maxlength="300" required>
+            <input id="search_input" type="text" name="search_input" class="form-control" value="" placeholder="podaj tytuł..." maxlength="300" autocomplete="off" required>
             <div class="invalid-tooltip">
               Tytuł jest wymagany
             </div>
@@ -203,7 +211,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="title_input">Tytuł</label>
-          <input id="title_input" type="text" name="title_input" class="form-control" value="" required>
+          <input id="title_input" type="text" name="title_input" class="form-control" value="" autocomplete="off" required>
           <div class="invalid-tooltip">
             Tytuł jest wymagany
           </div>
@@ -212,7 +220,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="author_input">Autor</label>
-          <input id="author_input" type="text" name="author_input" class="form-control" required>
+          <input id="author_input" type="text" name="author_input" class="form-control" autocomplete="off" required>
           <div class="invalid-tooltip">
             Autor jest wymagany
           </div>
@@ -221,7 +229,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="genre_select_input">Gatunek</label>
-          <select id="genre_select_input" name="genre_select_input" class="custom-select form-control" required>
+          <select id="genre_select_input" name="genre_select_input" class="custom-select form-control" autocomplete="off" required>
             <option selected disabled value="">wybierz...</option>
             <?php echo $genre_options ?>
             <option value="inny...">inny...</option>
@@ -239,7 +247,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="isbn_input">ISBN</label>
-          <input id="isbn_input" type="text" name="isbn_input" class="form-control">
+          <input id="isbn_input" type="text" name="isbn_input" autocomplete="off" class="form-control">
           <div class="invalid-tooltip">
             Numer ISBN jest niepoprawny
           </div>
@@ -264,6 +272,24 @@ foreach($genre_list as $genre)
                 <input id="publisher_input" type="text" name="publisher_input" class="form-control" maxlength="3000">
               </div>
             </div>
+            <div class="form-row">
+              <div id="npages_container" class="col-md">
+                <label for="number_of_pages_input" class="col-form-label pb-1">Liczba stron:</label>
+                <input id="number_of_pages_input" type="number" name="number_of_pages_input" class="form-control" min="1" max="9999" step="1" autocomplete="off">
+                <div class="invalid-tooltip">
+                  Liczba stron musi być w przedziale od 1 do 9999
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="col-md">
+                <label for="book_form_input" class="col-form-label pb-1">Forma książki</label>
+                <select id="book_form_input" name="book_form_input" class="custom-select form-control" autocomplete="off">
+                  <option selected value="">-</option>
+                  <?php echo $book_form_options ?>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -271,7 +297,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="descr_input">Opis</label>
-          <textarea id="descr_input" class="form-control mb-1" name="descr_input" rows="3" required></textarea>
+          <textarea id="descr_input" class="form-control mb-1" name="descr_input" rows="3" autocomplete="off" required></textarea>
           <div class="invalid-tooltip">
             Opis jest wymagany
           </div>
@@ -374,7 +400,7 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="tags_input">Dodatkowe tagi</label>
-          <input id="tags_input" type="text" name="tags_input" class="form-control" maxlength="1500" value="<?php echo $additional_tags_value ?>">
+          <input id="tags_input" type="text" name="tags_input" class="form-control" maxlength="1500" autocomplete="off" value="<?php echo $additional_tags_value ?>">
           <div class="invalid-tooltip">
             Nieprawidłowe tagi. Dozwolone są tylko znaki alfanumeryczne, odstęp/spacja oraz znak #
           </div>
@@ -403,7 +429,10 @@ foreach($genre_list as $genre)
       <div class="form-row">
         <div class="col-md mb-3">
           <label for="image_url_input">Url obrazka</label>
-          <input id="image_url_input" type="text" name="image_url_input" class="form-control" autocomplete="off">
+          <input id="image_url_input" type="url" name="image_url_input" class="form-control" autocomplete="off">
+          <div class="invalid-tooltip">
+            Url jest nieprawidłowy
+          </div>
         </div>
       </div>
 
@@ -488,7 +517,7 @@ foreach($genre_list as $genre)
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=9" type="text/javascript"></script>
+  <script src="./js/main.js?v=10" type="text/javascript"></script>
 </body>
 
 </html>

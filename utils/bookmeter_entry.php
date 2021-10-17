@@ -11,6 +11,8 @@ class bookmeter_entry
   private $isbn;
   private $translator;
   private $publisher;
+  private $number_of_pages;
+  private $book_form;
   private $descr;
   private $additional_tags;
   private $img_file;
@@ -40,6 +42,14 @@ class bookmeter_entry
     if(empty($this->publisher) == false)
       $publisher_row = $this->format_label('Wydawnictwo:') . $this->publisher . "\n";
 
+    $number_of_pages_row = '';
+    if(empty($this->number_of_pages) == false)
+      $number_of_pages_row = $this->format_label('Liczba stron:') . $this->number_of_pages . "\n";
+  
+    $book_form_row = '';
+    if(empty($this->book_form) == false)
+      $book_form_row = $this->format_label('Forma książki:') . $this->book_form . "\n";
+
     $isbn_row = '';
     if(empty($this->isbn) == false)
       $isbn_row = $this->format_label('ISBN:') . $this->isbn . "\n";
@@ -65,6 +75,8 @@ class bookmeter_entry
     . $isbn_row
     . $translator_row
     . $publisher_row
+    . $number_of_pages_row
+    . $book_form_row
     . $this->format_label('Ocena:') . $rate_out . "\n\n"
     . $this->descr . "\n\n"
     . ($this->add_ad == true ? ($ad . "\n\n") : "")
@@ -93,6 +105,17 @@ class bookmeter_entry
       return $err_msg;
 
     $err_msg = $this->validate_publisher();
+    if($err_msg != '')
+      return $err_msg;
+
+    if(empty($this->number_of_pages) == false || is_numeric($this->number_of_pages))
+    {
+      $err_msg = $this->error_if_nonum($this->number_of_pages, 1, 9999, 'liczba stron musi być w zakresie od 1 do 9999');
+      if($err_msg != '')
+        return $err_msg;
+    }
+
+    $err_msg = $this->validate_book_form();
     if($err_msg != '')
       return $err_msg;
 
@@ -154,6 +177,20 @@ class bookmeter_entry
   {
     $this->publisher = $this->strip_unsafe_chars(trim($publisher));
     $this->publisher = $this->replace_tabs($this->publisher);
+  }
+
+  public function set_number_of_pages($npages)
+  {
+    $this->number_of_pages = $this->strip_unsafe_chars($npages);
+    $this->number_of_pages = $this->replace_tabs($this->number_of_pages);
+    if(empty($this->number_of_pages) == false)
+      $this->number_of_pages = intval($this->number_of_pages);
+  }
+
+  public function set_book_form($bform)
+  {
+    $this->book_form = $this->strip_unsafe_chars($bform);
+    $this->book_form = $this->replace_tabs($this->book_form);
   }
 
   public function set_isbn($isbn)
@@ -281,6 +318,15 @@ class bookmeter_entry
     }
   }
 
+  public function get_available_book_forms()
+  {
+    return [
+      'książka',
+      'e-book',
+      'audiobook'
+    ];
+  }
+
   private function format_label($label_text)
   {
     if($this->bold_labels)
@@ -343,6 +389,21 @@ class bookmeter_entry
 
     if(mb_strlen($this->publisher) > 3000)
       return 'pole Wydawnictwo może zawierać maksymalnie 3000 znaków';
+
+    return '';
+  }
+
+  private function validate_book_form()
+  {
+    if(empty($this->book_form))
+      return '';
+
+    $bforms = $this->get_available_book_forms();
+    if(in_array($this->book_form, $bforms) == false)
+      return 'nieprawidłowa wartość w polu forma książki';
+
+    if($this->book_form == "audiobook" && empty($this->number_of_pages) == false)
+      return 'audiobook nie może zawierać ilości stron';
 
     return '';
   }

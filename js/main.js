@@ -579,6 +579,18 @@
     }
   });
 
+  $("#book_form_input").change(function(){
+    var val = $(this).val();
+    var npages_container = $("#npages_container");
+    if(val == "audiobook") {
+      $("#number_of_pages_input").val("");
+      npages_container.addClass("d-none");
+    }
+    else {
+      npages_container.removeClass("d-none");
+    }
+  });
+
   $("#descr_bold_btn").click(function(e){
     e.preventDefault();
 
