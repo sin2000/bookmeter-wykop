@@ -12,7 +12,7 @@ class bookmeter_entry
   private $translator;
   private $publisher;
   private $number_of_pages;
-  private $book_form;
+  private $book_forms = [];
   private $descr;
   private $additional_tags;
   private $img_file;
@@ -47,8 +47,8 @@ class bookmeter_entry
       $number_of_pages_row = $this->format_label('Liczba stron:') . $this->number_of_pages . "\n";
   
     $book_form_row = '';
-    if(empty($this->book_form) == false)
-      $book_form_row = $this->format_label('Forma książki:') . $this->book_form . "\n";
+    if(count($this->book_forms) > 0)
+      $book_form_row = $this->format_label('Forma książki:') . implode(', ', $this->book_forms) . "\n";
 
     $isbn_row = '';
     if(empty($this->isbn) == false)
@@ -187,10 +187,18 @@ class bookmeter_entry
       $this->number_of_pages = intval($this->number_of_pages);
   }
 
-  public function set_book_form($bform)
+  public function set_book_form($bforms)
   {
-    $this->book_form = $this->strip_unsafe_chars($bform);
-    $this->book_form = $this->replace_tabs($this->book_form);
+    if(is_array($bforms))
+    {
+      foreach($bforms as $val)
+      {
+        $bf = $this->strip_unsafe_chars($val);
+        $bf = $this->replace_tabs($bf);
+        
+        array_push($this->book_forms, $bf);
+      }
+    }
   }
 
   public function set_isbn($isbn)
@@ -395,14 +403,18 @@ class bookmeter_entry
 
   private function validate_book_form()
   {
-    if(empty($this->book_form))
+    $book_forms_count = count($this->book_forms);
+    if($book_forms_count == 0)
       return '';
 
-    $bforms = $this->get_available_book_forms();
-    if(in_array($this->book_form, $bforms) == false)
-      return 'nieprawidłowa wartość w polu forma książki';
+    $available_forms = $this->get_available_book_forms();
 
-    if($this->book_form == "audiobook" && empty($this->number_of_pages) == false)
+    if($book_forms_count > count($available_forms))
+      return 'dostępne są maksylanie trzy formy książki';
+
+    $this->book_forms = array_intersect($available_forms, $this->book_forms);
+
+    if(count($this->book_forms) == 1 && in_array("audiobook", $this->book_forms) && empty($this->number_of_pages) == false)
       return 'audiobook nie może zawierać ilości stron';
 
     return '';

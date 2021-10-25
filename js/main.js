@@ -579,15 +579,26 @@
     }
   });
 
-  $("#book_form_input").change(function(){
-    var val = $(this).val();
-    var npages_container = $("#npages_container");
-    if(val == "audiobook") {
+  $(".book_form").change(function(){
+    var bf = [];
+    bf["book"] = $("#bf_book_input").prop('checked');
+    bf["ebook"] = $("#bf_ebook_input").prop('checked');
+    bf["audio"] = $("#bf_audiobook_input").prop('checked');
+
+    if(bf["audio"] == true && bf["book"] == false && bf["ebook"] == false) {
       $("#number_of_pages_input").val("");
-      npages_container.addClass("d-none");
     }
-    else {
-      npages_container.removeClass("d-none");
+
+    var bf_counter = 0;
+    for(var key in bf) {
+      if(bf[key] == true) {
+        ++bf_counter;
+      }
+    }
+
+    if(bf_counter > 1) {
+      $("#isbn_input").val("");
+      validate_isbn();
     }
   });
 

@@ -47,7 +47,6 @@ $genre_list = [
   'thriller',
 ];
 $genre_options = create_options_tags($genre_list);
-$book_form_options = create_options_tags($book_entry->get_available_book_forms());
 
 ?>
 
@@ -283,11 +282,23 @@ $book_form_options = create_options_tags($book_entry->get_available_book_forms()
             </div>
             <div class="form-row">
               <div class="col-md">
-                <label for="book_form_input" class="col-form-label pb-1">Forma książki</label>
-                <select id="book_form_input" name="book_form_input" class="custom-select form-control" autocomplete="off">
-                  <option selected value="">-</option>
-                  <?php echo $book_form_options ?>
-                </select>
+                <label class="col-form-label pb-1">Forma książki</label>
+                <div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" name="book_form_input[]" class="custom-control-input book_form" id="bf_book_input" autocomplete="off" value="książka">
+                    <label class="custom-control-label" for="bf_book_input">książka</label>
+                  </div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" name="book_form_input[]" class="custom-control-input book_form" id="bf_ebook_input" autocomplete="off" value="e-book">
+                    <label class="custom-control-label" for="bf_ebook_input">e-book</label>
+                  </div>
+                  <div class="custom-control custom-checkbox custom-control-inline">
+                    <input type="checkbox" name="book_form_input[]" class="custom-control-input book_form" id="bf_audiobook_input" autocomplete="off" value="audiobook">
+                    <label class="custom-control-label" for="bf_audiobook_input">audiobook</label>
+                  </div>
+                </div>
+                <div class="small text-black-50">* po wybraniu samego audiobooka usuwana jest liczba stron</div>
+                <div class="small text-black-50">* po wybraniu więcej niż jednej formy usuwany jest ISBN</div>
               </div>
             </div>
           </div>
@@ -517,7 +528,7 @@ $book_form_options = create_options_tags($book_entry->get_available_book_forms()
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=10" type="text/javascript"></script>
+  <script src="./js/main.js?v=11" type="text/javascript"></script>
 </body>
 
 </html>
