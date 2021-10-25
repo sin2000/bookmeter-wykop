@@ -410,12 +410,12 @@ class bookmeter_entry
     $available_forms = $this->get_available_book_forms();
 
     if($book_forms_count > count($available_forms))
-      return 'dostępne są maksylanie trzy formy książki';
+      return 'dostępne są maksymalnie trzy formy książki';
 
     $this->book_forms = array_intersect($available_forms, $this->book_forms);
 
     if(count($this->book_forms) == 1 && in_array("audiobook", $this->book_forms) && empty($this->number_of_pages) == false)
-      return 'audiobook nie może zawierać ilości stron';
+      return 'audiobook nie może zawierać liczby stron';
 
     return '';
   }
