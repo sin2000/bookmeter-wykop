@@ -7,6 +7,7 @@ class book_info_database
 {
   private const min_filter_length = 2;
   private const max_filter_length = 300;
+  private const max_cache_time_secs = 3 * 60 * 60; // 3h
   private const book_cache_key = 'last_book_cache';
   private const title_cache_key = 'last_title_cache';
 
@@ -178,7 +179,18 @@ class book_info_database
     {
       $sess_val = $_SESSION[$cache_key];
       if($sess_val['filter'] === $filter)
+      {
+        $time_diff = time() - ($sess_val['create_time'] ?? 0);
+        if($time_diff > book_info_database::max_cache_time_secs)
+        {
+          debug_log_file::append(__METHOD__, 'invalidate: ' . $filter);
+          unset($_SESSION[$cache_key]);
+          return false;
+        }
+
+        debug_log_file::append(__METHOD__, 'hit: ' . $filter);
         return $sess_val['item'];
+      }
     }
 
     return false;
@@ -186,7 +198,7 @@ class book_info_database
 
   private function set_cached_item($cache_key, $filter, $item)
   {
-    $_SESSION[$cache_key] = [ 'filter' => $filter, 'item' => $item ];
+    $_SESSION[$cache_key] = [ 'filter' => $filter, 'item' => $item, 'create_time' => time() ];
   }
 }
 
