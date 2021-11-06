@@ -377,6 +377,13 @@
     $("#isbn_input").val(book.isbn);
     $("#translator_input").val(book.translator);
     $("#publisher_input").val(book.publisher);
+    $("#number_of_pages_input").val(book.pages);
+    if(book.form != null) {
+      var book_form_arr = [$("#bf_ebook_input"), $("#bf_audiobook_input")];
+      book_form_arr[book.form - 1].prop("checked", true);
+      $(".book_form").change();
+    }
+
     $("#image_url_input").val(get_book_image_url(book.image_url, false));
 
     $("#search_content").addClass("d-none");
@@ -581,9 +588,9 @@
 
   $(".book_form").change(function(){
     var bf = [];
-    bf["book"] = $("#bf_book_input").prop('checked');
-    bf["ebook"] = $("#bf_ebook_input").prop('checked');
-    bf["audio"] = $("#bf_audiobook_input").prop('checked');
+    bf["book"] = $("#bf_book_input").prop("checked");
+    bf["ebook"] = $("#bf_ebook_input").prop("checked");
+    bf["audio"] = $("#bf_audiobook_input").prop("checked");
 
     if(bf["audio"] == true && bf["book"] == false && bf["ebook"] == false) {
       $("#number_of_pages_input").val("");

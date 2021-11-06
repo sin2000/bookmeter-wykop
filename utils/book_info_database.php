@@ -80,7 +80,7 @@ class book_info_database
     $title = $this->sanitize_title($title);
 
     $sql = <<<SQL
-      SELECT authors, title, genre, isbn, translator, publisher, image_url FROM book_info
+      SELECT authors, title, genre, isbn, translator, publisher, image_url, pages, form FROM book_info
       WHERE ltitle = LOWER(?)
       ORDER BY authors NULLS LAST, isbn DESC
       LIMIT ?
