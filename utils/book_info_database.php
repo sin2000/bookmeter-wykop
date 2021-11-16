@@ -108,8 +108,26 @@ class book_info_database
   private function open()
   {
     $this->db = new SQLite3(confidential_vars::book_info_db_filepath, SQLITE3_OPEN_READONLY);
-    $this->db->loadExtension(confidential_vars::sqlite_ext_filename); 
+    if($this->db->loadExtension(confidential_vars::sqlite_ext_filename) == false)
+    {
+      $this->db->createCollation('POLISH', 'book_info_database::mycollation');
+      $this->db->createFunction('LOWER', 'book_info_database::mylower', 1, SQLITE3_DETERMINISTIC);
+    }
+
     $this->db->busyTimeout(15000);
+  }
+
+  public static function mycollation($val1, $val2)
+  {
+    return strcoll($val1, $val2);
+  }
+
+  public static function mylower($val)
+  {
+    if ($val !== null)
+      return mb_strtolower($val);
+
+    return null;
   }
 
   private function sanitize_title($title)
