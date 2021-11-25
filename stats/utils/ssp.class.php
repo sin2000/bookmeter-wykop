@@ -62,7 +62,7 @@ class SSP {
 	/**
 	 * Database connection
 	 *
-	 * Obtain an PHP PDO connection from a connection details array
+	 * Obtain an SQLite3 connection from a connection details array
 	 *
 	 *  @param  array $conn SQL connection details. The array should have
 	 *    the following properties
@@ -70,7 +70,7 @@ class SSP {
 	 *     * db   - database name
 	 *     * user - user name
 	 *     * pass - user password
-	 *  @return PDO PDO connection
+	 *  @return SQLite3 connection
 	 */
 	static function db ( $conn )
 	{
@@ -282,73 +282,11 @@ class SSP {
 	}
 
 	/**
-	 * Perform the SQL queries needed for an server-side processing requested,
-	 * utilising the helper functions of this class, limit(), order() and
-	 * filter() among others. The returned array is ready to be encoded as JSON
-	 * in response to an SSP request, or can be modified if needed before
-	 * sending back to the client.
-	 *
-	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array|PDO $conn PDO connection resource or connection parameters array
-	 *  @param  string $table SQL table to query
-	 *  @param  string $primaryKey Primary key of the table
-	 *  @param  array $columns Column information array
-	 *  @return array          Server-side processing response array
-	 */
-	static function simple ( $request, $conn, $table, $primaryKey, $columns )
-	{
-		$bindings = array();
-		$db = self::db( $conn );
-
-		// Build the SQL query string from the request
-		$limit = self::limit( $request, $columns );
-		$order = self::order( $request, $columns );
-		$where = self::filter( $request, $columns, $bindings );
-
-		// Main query to actually get the data
-		$data = self::sql_exec( $db, $bindings,
-			"SELECT `".implode("`, `", self::pluck($columns, 'db'))."`
-			 FROM `$table`
-			 $where
-			 $order
-			 $limit"
-		);
-
-		// Data set length after filtering
-		$resFilterLength = self::sql_exec( $db, $bindings,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`
-			 $where"
-		);
-		$recordsFiltered = $resFilterLength[0][0];
-
-		// Total data set length
-		$resTotalLength = self::sql_exec( $db,
-			"SELECT COUNT(`{$primaryKey}`)
-			 FROM   `$table`"
-		);
-		$recordsTotal = $resTotalLength[0][0];
-
-		/*
-		 * Output
-		 */
-		return array(
-			"draw"            => isset ( $request['draw'] ) ?
-				intval( $request['draw'] ) :
-				0,
-			"recordsTotal"    => intval( $recordsTotal ),
-			"recordsFiltered" => intval( $recordsFiltered ),
-			"data"            => self::data_output( $columns, $data )
-		);
-	}
-
-
-	/**
 	 * The difference between this method and the `simple` one, is that you can
 	 * apply additional `where` conditions to the SQL queries.
 	 *
 	 *  @param  array $request Data sent to server by DataTables
-	 *  @param  array|PDO $conn PDO connection resource or connection parameters array
+	 *  @param  array|SQLite3 $conn SQLite3 connection resource or connection parameters array
 	 *  @param  string $table SQL table to query
 	 *  @param  string $primaryKey Primary key of the table
 	 *  @param  array $columns Column information array
@@ -430,32 +368,17 @@ class SSP {
 	 * @param  array $sql_details SQL server connection details array, with the
 	 *   properties:
 	 *     * filepath
-	 * @return PDO Database connection handle
+	 * @return SQLite3 Database connection handle
 	 */
 	static function sql_connect ( $sql_details )
 	{
-    setlocale(LC_COLLATE, 'pl_PL.UTF-8');
-
-    try {
-			$db = @new PDO(
-				'sqlite:' . $sql_details['filepath'],
-				null,
-				null,
-        array( PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_EMULATE_PREPARES => false,
-				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-				PDO::SQLITE_ATTR_OPEN_FLAGS => PDO::SQLITE_OPEN_READONLY )
-			);
-			
-			$db->sqliteCreateCollation('NOCASE', 'SSP::mycollation');
-			$db->sqliteCreateFunction('LOWER', 'SSP::mylower', 1, SQLITE3_DETERMINISTIC);
-		}
-		catch (PDOException $e) {
-			self::fatal(
-				"An error occurred while connecting to the database. ".
-				"The error reported by the server was: ".$e->getMessage()
-			);
-		}
+		$db = new SQLite3($sql_details['filepath'], SQLITE3_OPEN_READONLY);
+    if($db->loadExtension(confidential_vars::sqlite_ext_filename) == false)
+    {
+      $db->createCollation('POLISH', 'SSP::mycollation');
+      $db->createFunction('LOWER', 'SSP::mylower', 1, SQLITE3_DETERMINISTIC);
+    }
+    $db->busyTimeout(15000);
 
 		return $db;
 	}
@@ -464,7 +387,7 @@ class SSP {
 	/**
 	 * Execute an SQL query on the database
 	 *
-	 * @param  PDO $db  Database handler
+	 * @param  SQLite3 $db  Database handler
 	 * @param  array    $bindings Array of PDO binding values from bind() to be
 	 *   used for safely escaping strings. Note that this can be given as the
 	 *   SQL query string if no bindings are required.
@@ -485,20 +408,20 @@ class SSP {
 		if ( is_array( $bindings ) ) {
 			for ( $i=0, $ien=count($bindings) ; $i<$ien ; $i++ ) {
 				$binding = $bindings[$i];
-				$stmt->bindValue( $binding['key'], $binding['val'], $binding['type'] );
+				$stmt->bindValue( $binding['key'], $binding['val'] /*, $binding['type']*/ );
 			}
 		}
 
 		// Execute
-		try {
-			$stmt->execute();
-		}
-		catch (PDOException $e) {
-			self::fatal( "An SQL error occurred: ".$e->getMessage() );
-		}
+		$result =	$stmt->execute();
+		$arr = [];
+    while($row = $result->fetchArray(SQLITE3_BOTH))
+    {
+      array_push($arr, $row);
+    }
+    $result->finalize();
 
-		// Return all
-		return $stmt->fetchAll( PDO::FETCH_BOTH );
+		return $arr;
 	}
 
 
