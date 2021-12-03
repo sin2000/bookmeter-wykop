@@ -83,7 +83,7 @@ class bm_database
   public function get_book_count()
   {
     $sql = <<<SQL
-      SELECT COUNT(id) FROM bm_entry
+      SELECT COUNT(*) FROM bm_entry
     SQL;
 
     $res = $this->db->querySingle($sql);
@@ -94,7 +94,7 @@ class bm_database
   public function get_login_count()
   {
     $sql = <<<SQL
-      SELECT COUNT(id) FROM login
+      SELECT COUNT(*) FROM login
     SQL;
 
     $res = $this->db->querySingle($sql, false);
@@ -138,10 +138,10 @@ class bm_database
   public function get_top_users()
   {
     $sql = <<<SQL
-      SELECT l.name, COUNT(b.login_id) FROM bm_entry AS b
+      SELECT l.name, COUNT(*) FROM bm_entry AS b
       LEFT JOIN login AS l ON b.login_id = l.id
       GROUP BY b.login_id
-      ORDER BY COUNT(b.login_id) DESC, l.name COLLATE NOCASE
+      ORDER BY COUNT(*) DESC, l.name COLLATE NOCASE
       LIMIT 20
     SQL;
 
@@ -160,9 +160,9 @@ class bm_database
   {
     $sql = <<<SQL
       SELECT authors, title, AVG(rate), SUM(vote_count), entry_id FROM bm_entry
-      GROUP BY authors, title
+      GROUP BY LOWER(authors), LOWER(title)
       HAVING AVG(rate) > 5
-      ORDER BY AVG(rate) DESC, SUM(vote_count) DESC, authors, title
+      ORDER BY AVG(rate) DESC, SUM(vote_count) DESC, LOWER(authors), LOWER(title)
       LIMIT 20
     SQL;
 
@@ -181,9 +181,9 @@ class bm_database
   {
     $sql = <<<SQL
       SELECT authors, title, AVG(rate), SUM(vote_count), entry_id FROM bm_entry
-      GROUP BY authors, title
+      GROUP BY LOWER(authors), LOWER(title)
       HAVING AVG(rate) < 5
-      ORDER BY AVG(rate), SUM(vote_count), authors, title
+      ORDER BY AVG(rate), SUM(vote_count), LOWER(authors), LOWER(title)
       LIMIT 10
     SQL;
 
@@ -202,8 +202,8 @@ class bm_database
   {
     $sql = <<<SQL
       SELECT authors, title, SUM(vote_count) FROM bm_entry
-      GROUP BY authors, title
-      ORDER BY SUM(vote_count) DESC, authors, title
+      GROUP BY LOWER(authors), LOWER(title)
+      ORDER BY SUM(vote_count) DESC, LOWER(authors), LOWER(title)
       LIMIT 10
     SQL;
 
@@ -221,9 +221,9 @@ class bm_database
   public function get_top_authors()
   {
     $sql = <<<SQL
-      SELECT authors, COUNT(id) FROM bm_entry
-      GROUP BY authors
-      ORDER BY COUNT(id) DESC, authors
+      SELECT authors, COUNT(*) FROM bm_entry
+      GROUP BY LOWER(authors)
+      ORDER BY COUNT(*) DESC, authors
       LIMIT 10
     SQL;
 
@@ -241,10 +241,10 @@ class bm_database
     public function get_top_popular_books()
   {
     $sql = <<<SQL
-      SELECT authors, title, COUNT(id), AVG(rate), SUM(vote_count), entry_id FROM bm_entry
-      GROUP BY authors, title
-      HAVING COUNT(id) > 1
-      ORDER BY COUNT(id) DESC, AVG(rate) DESC, SUM(vote_count) DESC, authors, title
+      SELECT authors, title, COUNT(*), AVG(rate), SUM(vote_count), entry_id FROM bm_entry
+      GROUP BY LOWER(authors), LOWER(title)
+      HAVING COUNT(*) > 1
+      ORDER BY COUNT(*) DESC, AVG(rate) DESC, SUM(vote_count) DESC, LOWER(authors), LOWER(title)
       LIMIT 10
     SQL;
 
@@ -262,20 +262,24 @@ class bm_database
   public function get_top_genres()
   {
     $sql = <<<SQL
-      SELECT * FROM(
-        SELECT g.name,
+      SELECT * FROM (
+        WITH cat AS (
+          SELECT LOWER(g.name) lname, COUNT(*) cnt
+          FROM bm_entry AS b
+          LEFT JOIN genre AS g ON b.genre_id = g.id
+          GROUP BY b.genre_id
+        )
+        SELECT LOWER(g.name), 
         (
-          SELECT COUNT(bb.genre_id) FROM bm_entry AS bb
-          LEFT JOIN genre AS gg ON bb.genre_id = gg.id
-          WHERE INSTR(LOWER(gg.name), LOWER(g.name))
-        ) genre_count
+          SELECT SUM(cat.cnt) FROM cat WHERE INSTR(cat.lname, LOWER(g.name))
+        ) ccc
         FROM bm_entry AS b
         LEFT JOIN genre AS g ON b.genre_id = g.id
         GROUP BY b.genre_id
-        ORDER BY COUNT(b.genre_id) DESC, g.name
+        ORDER BY COUNT(*) DESC, g.name
         LIMIT 10
       )
-      ORDER BY genre_count DESC
+      ORDER BY ccc DESC
     SQL;
 
     $res = $this->db->query($sql);
@@ -295,12 +299,13 @@ class bm_database
       return [];
 
     $filter = mb_strtolower($filter);
-    $distinct = $use_distinct ? 'DISTINCT' : '';
+    $distinct = $use_distinct ? "GROUP BY LOWER({$field_name})" : '';
 
     $sql = <<<SQL
-      SELECT $distinct $field_name FROM $table
+      SELECT $field_name FROM $table
       WHERE INSTR(LOWER($field_name), ?)>0
-      ORDER BY $field_name
+      $distinct
+      ORDER BY LOWER($field_name)
       LIMIT ?
     SQL;
 
@@ -321,18 +326,17 @@ class bm_database
 
   private function open()
   {
-    setlocale(LC_COLLATE, 'pl_PL.UTF-8');
     $this->db = new SQLite3(confidential_vars::stats_db_filepath, SQLITE3_OPEN_READONLY);
-    $this->db->busyTimeout(25000);
-    $this->db->createCollation('NOCASE', 'bm_database::mycollation');
-    $this->db->createFunction('LOWER', 'bm_database::mylower', 1, SQLITE3_DETERMINISTIC);
+    if($this->db->loadExtension(confidential_vars::sqlite_ext_filename) == false)
+    {
+      $this->db->createCollation('POLISH', 'bm_database::mycollation');
+      $this->db->createFunction('LOWER', 'bm_database::mylower', 1, SQLITE3_DETERMINISTIC);
+    }
+    $this->db->busyTimeout(15000);
   }
 
   public static function mycollation($val1, $val2)
   {
-    $val1 = mb_strtolower($val1);
-    $val2 = mb_strtolower($val2);
-
     return strcoll($val1, $val2);
   }
 

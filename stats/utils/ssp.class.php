@@ -319,7 +319,7 @@ class SSP {
 
 		// Data set length after filtering
 		$resFilterLength = self::sql_exec( $db, $bindings,
-			"SELECT COUNT(`{$primaryKey}`)
+			"SELECT COUNT(*)
 			 FROM   `$table`
 			 $where"
 		);
@@ -327,7 +327,7 @@ class SSP {
 
 		// Total data set length
 		$resTotalLength = self::sql_exec( $db, null,
-			"SELECT COUNT(`{$primaryKey}`)
+			"SELECT COUNT(*)
 			 FROM   `$table`"
 		);
 		$recordsTotal = $resTotalLength[0][0];
@@ -347,9 +347,6 @@ class SSP {
   
   static function mycollation($val1 ,$val2)
   {
-    $val1 = mb_strtolower($val1);
-    $val2 = mb_strtolower($val2);
-
     return strcoll($val1, $val2);
   }
 
