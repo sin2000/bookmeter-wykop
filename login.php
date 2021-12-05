@@ -10,12 +10,19 @@ $app = new app_auth;
 $app->redirect_to_index_if_logged();
 
 $auth_id = $_GET["id"] ?? null;
-$connect_data = json_decode(base64_decode($_GET["connectData"] ?? null));
+if(strlen($auth_id) > 100)
+  $auth_id = null;
+
+$connect_data = $_GET["connectData"] ?? null;
+if(strlen($connect_data) > 512)
+  $connect_data = null;
+
+$connect_data = json_decode(base64_decode($connect_data));
 $has_connect_data = !empty($connect_data->appkey) && !empty($connect_data->login)
   && !empty($connect_data->token) && !empty($connect_data->sign) && !empty($auth_id);
 
 $wapi = new wykop_api;
-if($has_connect_data && $connect_data->appkey == $wapi->get_appkey() && $auth_id == $app->get_auth_id())
+if($has_connect_data && $connect_data->appkey == $wapi->get_appkey() && $app->has_generated_auth_id($auth_id))
 {
   $app->remove_auth_id_from_session();
   $sign_calc = md5($wapi->get_appsecret() . $connect_data->appkey . $connect_data->login . $connect_data->token);

@@ -69,12 +69,12 @@ class app_auth
     setcookie($this->cookie_token_key, '', time() - 3600, '', '', true, true);
   }
 
-  public function get_auth_id()
+  public function has_generated_auth_id($curr_auth_id)
   {
-    if(empty($_SESSION[$this->sessionkey_auth_id]) == false)
-      return $_SESSION[$this->sessionkey_auth_id];
+    if(isset($_SESSION[$this->sessionkey_auth_id]))
+      return in_array($curr_auth_id, $_SESSION[$this->sessionkey_auth_id]);
 
-    return '';
+    return false;
   }
 
   public function remove_auth_id_from_session()
@@ -86,8 +86,19 @@ class app_auth
   {
     $len = random_int(33, 43);
     $auth_id = bin2hex(random_bytes($len));
-    
-    $_SESSION[$this->sessionkey_auth_id] = $auth_id;
+
+    $arr = [];
+    if(empty($_SESSION[$this->sessionkey_auth_id]) == false)
+    {
+      $arr = $_SESSION[$this->sessionkey_auth_id];
+
+      if(count($arr) >= 15)
+        array_shift($arr);
+    }
+
+    array_push($arr, $auth_id);
+
+    $_SESSION[$this->sessionkey_auth_id] = $arr;
 
     return $auth_id;
   }
@@ -146,8 +157,11 @@ class app_auth
     if(empty($_COOKIE[$this->cookie_login_key]) == false)
     {
       $enc = $_COOKIE[$this->cookie_login_key];
-      $dec = $this->decrypt_data($enc, $this->login_name_cipher_key_b64);
-      return $dec;
+      if(strlen($enc) < 1000)
+      {
+        $dec = $this->decrypt_data($enc, $this->login_name_cipher_key_b64);
+        return $dec;
+      }
     }
 
     return '';
@@ -158,8 +172,11 @@ class app_auth
     if(empty($_COOKIE[$this->cookie_token_key]) == false)
     {
       $enc = $_COOKIE[$this->cookie_token_key];
-      $dec = $this->decrypt_data($enc, $this->token_cipher_key_b64);
-      return $dec;
+      if(strlen($enc) < 2000)
+      {
+        $dec = $this->decrypt_data($enc, $this->token_cipher_key_b64);
+        return $dec;
+      }
     }
 
     return '';
