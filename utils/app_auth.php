@@ -9,7 +9,6 @@ class app_auth
   private $cookie_login_key = 'autha';
   private $cookie_token_key = 'authb';
   private $sessionkey_auth_id = 'app_auth_id';
-  private $login_redirect_page = 'login.php';
   private $login_name_cipher_key_b64;
   private $token_cipher_key_b64;
   private $cipher_method = 'aes-256-gcm';
@@ -18,9 +17,9 @@ class app_auth
   {
     $this->login_name_cipher_key_b64 = confidential_vars::$login_name_cipher_key_b64;
     $this->token_cipher_key_b64 = confidential_vars::$token_cipher_key_b64;
-  } 
-
-  public function redirect_to_login()
+  }
+  
+  public function redirect_to_wykopconnect()
   {
     if($this->has_auth_in_session())
     {
@@ -38,10 +37,16 @@ class app_auth
       }
     }
 
+    $redir_url = $this->get_current_base_url() . '/wykopconnect.php';
+    $this->redirect($redir_url);
+  }
+
+  public function redirect_to_login()
+  {
     $auth_id = urlencode($this->generate_auth_id());
-    $cur_url = $this->get_current_base_url() . '/' . $this->login_redirect_page . '?id=' . $auth_id;
+    $login_url = $this->get_current_base_url() . '/login.php?id=' . $auth_id;
     $wapi = new wykop_api;
-    $redir_url = $wapi->get_login_connect_url($cur_url);
+    $redir_url = $wapi->get_login_connect_url($login_url);
 
     $this->redirect($redir_url);
   }

@@ -22,7 +22,7 @@ function create_options_tags($values)
 session_start();
 
 $app = new app_auth;
-$app->redirect_to_login();
+$app->redirect_to_wykopconnect();
 
 $csrf_token = Csrf::getInputToken('index', 18000); // 5h=18000s; Uses setcookie so this must be before output
 $login_name = htmlspecialchars($app->get_session_login_name());
