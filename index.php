@@ -531,7 +531,7 @@ $genre_options = create_options_tags($genre_list);
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=13" type="text/javascript"></script>
+  <script src="./js/main.js?v=14" type="text/javascript"></script>
 </body>
 
 </html>

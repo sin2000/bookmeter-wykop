@@ -376,9 +376,18 @@
 
     $("#title_input").val(book.title);
     $("#author_input").val(book.authors);
-    $('#genre_select_input option[value="inny..."]').prop("selected", true);
+    
+    var option = $("#genre_select_input option").filter(function (idx, elem) { return elem.value === book.genre; });
+    if(option.length > 0) { 
+      option.prop("selected", true);
+    }
+    else {
+      $('#genre_select_input option[value="inny..."]').prop("selected", true);
+      $("#genre_input").val(book.genre);
+    }
+    
     $("#genre_select_input").change();
-    $("#genre_input").val(book.genre);
+
     $("#isbn_input").val(book.isbn);
     $("#translator_input").val(book.translator);
     $("#publisher_input").val(book.publisher);
