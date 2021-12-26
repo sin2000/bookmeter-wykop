@@ -118,7 +118,12 @@
       elem[0].setCustomValidity("bad genre");
     }
     else {
-      elem[0].setCustomValidity("");
+      if(elem.val() != "" && ((/^[a-z\dąćęłńóśźż )(,.]*$/).test(elem.val()) == false)) {
+        elem[0].setCustomValidity("bad genre");
+      }
+      else {
+        elem[0].setCustomValidity("");
+      }
     }
   }
 

@@ -35,16 +35,19 @@ $add_ad_check_value = $book_entry->get_add_ad() ? "checked" : "";
 $additional_tags_value = htmlspecialchars($book_entry->get_additional_tags());
 
 $genre_list = [
-  'ekonomia',
-  'fantasy',
-  'historyczna',
+  'biografia, autobiografia, pamiętnik',
+  'biznes, finanse',
+  'fantasy, science fiction',
+  'historia',
   'horror',
-  'kryminał',
+  'informatyka, matematyka',
+  'kryminał, sensacja, thriller',
+  'literatura faktu',
   'literatura piękna',
   'popularnonaukowa',
+  'poradniki',
   'reportaż',
-  'science fiction',
-  'thriller',
+  'sport',
 ];
 $genre_options = create_options_tags($genre_list);
 
@@ -237,9 +240,9 @@ $genre_options = create_options_tags($genre_list);
             Gatunek jest wymagany
           </div>
 
-          <input id="genre_input" type="text" name="genre_input" class="form-control mt-2 d-none">
+          <input id="genre_input" type="text" name="genre_input" class="form-control mt-2 d-none" autocomplete="off">
           <div class="invalid-tooltip">
-            Gatunek jest wymagany
+            Gatunek jest wymagany. Dozwolone małe litery, cyfry, spacje, nawiasy, kropka i przecinek.
           </div>
         </div>
       </div>
@@ -528,7 +531,7 @@ $genre_options = create_options_tags($genre_list);
   <script src="./js/bootstrap.bundle.min.js?v=2"></script>
   <script src="./js/jquery-ui.min.js"></script>
   <script src="./js/star-rating.min.js" type="text/javascript"></script>
-  <script src="./js/main.js?v=12" type="text/javascript"></script>
+  <script src="./js/main.js?v=13" type="text/javascript"></script>
 </body>
 
 </html>

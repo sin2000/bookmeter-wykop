@@ -66,7 +66,9 @@ class bookmeter_entry
     $app = new app_auth;
     $ad = 'Wpis dodany za pomocą [tego skryptu](' . $app->get_current_base_url() . ')';
     $atags = $this->get_additional_tags();
-    $more_tags = empty($atags) ? '' : ' ' . $atags;
+    $more_tags = $atags == '' ? '' : ' ' . $atags;
+    $gtags = $this->tags_from_genre();
+    $more_tags .= $gtags == '' ? '' : ' ' . $gtags;
 
     $body = $prev_counter . " + 1 = " . $counter . "\n\n"
     . $this->format_label('Tytuł:') . $this->title . "\n"
@@ -96,7 +98,7 @@ class bookmeter_entry
     if($err_msg != '')
       return $err_msg;
 
-    $err_msg = $this->error_if_empty($this->genre, 'gatunek jest wymagany');
+    $err_msg = $this->validate_genre();
     if($err_msg != '')
       return $err_msg;
 
@@ -379,6 +381,21 @@ class bookmeter_entry
     return '';
   }
 
+  private function validate_genre()
+  {
+    $err_msg = $this->error_if_empty($this->genre, 'gatunek jest wymagany');
+    if($err_msg != '')
+      return $err_msg;
+
+    if(mb_strlen($this->genre) > 2000)
+      return 'pole Gatunek może zawierać maksymalnie 2000 znaków';
+
+    if(preg_match('/^[[:lower:][:digit:] (),.]*$/u', $this->genre) == false)
+      return 'nieprawidłowy gatunek. Dozwolone są tylko małe znaki alfanumeryczne, odstęp/spacja oraz nawiasy (), przecinek i kropka';
+
+    return '';
+  }
+
   private function validate_translator()
   {
     if(empty($this->translator))
@@ -462,6 +479,25 @@ class bookmeter_entry
   private function replace_tabs($source, $replacement = ' ')
   {
     return str_replace("\t", $replacement, $source);
+  }
+
+  private function tags_from_genre()
+  {
+    $tags = [];
+    $genres = str_replace('(', ',', $this->genre);
+    $genres = explode(',', $genres);
+    foreach($genres as $g)
+    {
+      $cat_trimmed = trim($g);
+      $cat_trimmed = str_replace(['itd.', ')', '.', ' '], '', $cat_trimmed);
+      $tr = transliterator_transliterate('Any-Latin;Latin-ASCII;', $cat_trimmed);
+      if($tr !== false && $tr != '')
+      {
+        array_push($tags, '#' . $tr . site_globals::$tag_name);
+      }
+    }
+
+    return implode(' ', $tags);
   }
 }
 
