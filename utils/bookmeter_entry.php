@@ -36,27 +36,27 @@ class bookmeter_entry
 
     $translator_row = '';
     if(empty($this->translator) == false)
-      $translator_row = $this->format_label('Tłumacz:') . $this->translator . "\n";
+      $translator_row = $this->format_label('Tłumacz:') . '`' . $this->translator . "`\n";
 
     $publisher_row = '';
     if(empty($this->publisher) == false)
-      $publisher_row = $this->format_label('Wydawnictwo:') . $this->publisher . "\n";
+      $publisher_row = $this->format_label('Wydawnictwo:') . '`' . $this->publisher . "`\n";
 
     $number_of_pages_row = '';
     if(empty($this->number_of_pages) == false)
-      $number_of_pages_row = $this->format_label('Liczba stron:') . $this->number_of_pages . "\n";
+      $number_of_pages_row = $this->format_label('Liczba stron:') . '`' . $this->number_of_pages . "`\n";
   
     $book_form_row = '';
     if(count($this->book_forms) > 0)
-      $book_form_row = $this->format_label('Forma książki:') . implode(', ', $this->book_forms) . "\n";
+      $book_form_row = $this->format_label('Forma książki:') . '`' . implode(', ', $this->book_forms) . "`\n";
 
     $isbn_row = '';
     if(empty($this->isbn) == false)
-      $isbn_row = $this->format_label('ISBN:') . $this->isbn . "\n";
+      $isbn_row = $this->format_label('ISBN:') . '`' . $this->isbn . "`\n";
 
     $rate_out = '';
     if($this->use_star_rating == false)
-      $rate_out = $this->rate . '/10';
+      $rate_out = '`' . $this->rate . '/10`';
     else
     {
       $rate_out = str_repeat('★', $this->rate);
@@ -71,9 +71,9 @@ class bookmeter_entry
     $more_tags .= $gtags == '' ? '' : ' ' . $gtags;
 
     $body = $prev_counter . " + 1 = " . $counter . "\n\n"
-    . $this->format_label('Tytuł:') . $this->title . "\n"
-    . $this->format_label('Autor:') . $this->author . "\n"
-    . $this->format_label('Gatunek:') . $this->genre . "\n"
+    . $this->format_label('Tytuł:') . '`' . $this->title . "`\n"
+    . $this->format_label('Autor:') . '`' . $this->author . "`\n"
+    . $this->format_label('Gatunek:') . '`' . $this->genre . "`\n"
     . $isbn_row
     . $translator_row
     . $publisher_row
@@ -153,12 +153,14 @@ class bookmeter_entry
   {
     $this->title = $this->strip_unsafe_chars(trim($title));
     $this->title = $this->replace_tabs($this->title);
+    $this->title = $this->replace_backsticks($this->title);
   }
   
   public function set_author($author)
   {
     $this->author = $this->strip_unsafe_chars(trim($author));
     $this->author = $this->replace_tabs($this->author);
+    $this->author = $this->replace_backsticks($this->author);
   }
 
   public function set_genre($selected_genre, $genre_from_input)
@@ -167,18 +169,21 @@ class bookmeter_entry
 
     $this->genre = $this->strip_unsafe_chars(trim($genre_tmp));
     $this->genre = $this->replace_tabs($this->genre);
+    $this->genre = $this->replace_backsticks($this->genre);
   }
 
   public function set_translator($tr)
   {
     $this->translator = $this->strip_unsafe_chars(trim($tr));
     $this->translator = $this->replace_tabs($this->translator);
+    $this->translator = $this->replace_backsticks($this->translator);
   }
 
   public function set_publisher($publisher)
   {
     $this->publisher = $this->strip_unsafe_chars(trim($publisher));
     $this->publisher = $this->replace_tabs($this->publisher);
+    $this->publisher = $this->replace_backsticks($this->publisher);
   }
 
   public function set_number_of_pages($npages)
@@ -207,6 +212,7 @@ class bookmeter_entry
   {
     $this->isbn = $this->strip_unsafe_chars(trim($isbn));
     $this->isbn = $this->replace_tabs($this->isbn);
+    $this->isbn = $this->replace_backsticks($this->isbn);
   }
 
   public function set_description($description)
@@ -479,6 +485,11 @@ class bookmeter_entry
   private function replace_tabs($source, $replacement = ' ')
   {
     return str_replace("\t", $replacement, $source);
+  }
+
+  private function replace_backsticks($source, $replacement = "'")
+  {
+    return str_replace('`', $replacement, $source);
   }
 
   private function tags_from_genre()
