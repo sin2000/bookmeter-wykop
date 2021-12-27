@@ -31,6 +31,8 @@ $login_count = htmlspecialchars($summ_util->get_login_count());
 $book_per_all_users = htmlspecialchars($summ_util->get_book_per_user($login_count));
 
 $top_users_html = $summ_util->get_top_users();
+$top_voted_users_html = $summ_util->get_top_voted_users();
+$last_joined_users = $summ_util->get_last_joined_users();
 $top_books_html = $summ_util->get_top_books();
 $top_voted_books_html = $summ_util->get_top_voted_books();
 $top_authors_html = $summ_util->get_top_authors();
@@ -136,6 +138,34 @@ $worst_books_html = $summ_util->get_top_books(true);
       </thead>
       <tbody>
         <?php echo $top_users_html ?>
+      </tbody>
+      </table>
+
+      <div class="mt-3"><b>Najbardziej plusowani uczestnicy:</b></div>
+      <table class="table table-sm mt-2 table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Miejsce</th>
+          <th scope="col">Login</th>
+          <th scope="col">Liczba plusów (razem)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php echo $top_voted_users_html ?>
+      </tbody>
+      </table>
+
+      <div class="mt-3"><b>Ostatnio dołączyli:</b></div>
+      <table class="table table-sm mt-2 table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th scope="col">Miejsce</th>
+          <th scope="col">Login</th>
+          <th scope="col">Data dołączenia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php echo $last_joined_users ?>
       </tbody>
       </table>
 

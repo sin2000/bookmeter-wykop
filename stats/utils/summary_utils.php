@@ -199,6 +199,50 @@ class summary_utils
     return $html;
   }
 
+  public function get_top_voted_users()
+  {
+    $top_voted_users = $this->bmdb->get_top_voted_users();
+    $html = '';
+    $count = count($top_voted_users);
+    for($i = 0; $i < $count; ++$i)
+    {
+      $nr = $i + 1;
+      $entry = $top_voted_users[$i];
+      $login = htmlspecialchars($entry[0]);
+      $vote_sum = htmlspecialchars($entry[1]);
+      $html .=
+        "<tr>
+        <th scope=\"row\">$nr</th>
+        <td><a href=\"https://www.wykop.pl/tag/bookmeter/autor/$login/\" target=\"_blank\">$login</a></td>
+        <td>$vote_sum</td>
+        </tr>";
+    }
+
+    return $html;
+  }
+
+  public function get_last_joined_users()
+  {
+    $last_joined_users = $this->bmdb->get_last_joined_users();
+    $html = '';
+    $count = count($last_joined_users);
+    for($i = 0; $i < $count; ++$i)
+    {
+      $nr = $i + 1;
+      $entry = $last_joined_users[$i];
+      $login = htmlspecialchars($entry[0]);
+      $join_date = htmlspecialchars($entry[1]);
+      $html .=
+        "<tr>
+        <th scope=\"row\">$nr</th>
+        <td><a href=\"https://www.wykop.pl/tag/bookmeter/autor/$login/\" target=\"_blank\">$login</a></td>
+        <td>$join_date</td>
+        </tr>";
+    }
+
+    return $html;
+  }
+
   public function get_top_books($worst_first = false)
   {
     $books = $worst_first ? $this->bmdb->get_worst_books() : $this->bmdb->get_top_books();

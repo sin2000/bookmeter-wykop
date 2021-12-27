@@ -156,6 +156,48 @@ class bm_database
     return $arr;
   }
 
+  public function get_top_voted_users()
+  {
+    $sql = <<<SQL
+      SELECT l.name, SUM(vote_count) FROM bm_entry AS b
+      LEFT JOIN login AS l ON b.login_id = l.id
+      GROUP BY b.login_id
+      ORDER BY SUM(vote_count) DESC, l.name COLLATE NOCASE
+      LIMIT 10
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
+  public function get_last_joined_users()
+  {
+    $sql = <<<SQL
+      SELECT l.name, strftime('%Y-%m-%d %H:%M', MIN(date), 'unixepoch', 'localtime') FROM bm_entry AS b
+      LEFT JOIN login AS l ON b.login_id = l.id
+      GROUP BY b.login_id
+      ORDER BY MIN(date) DESC, l.name COLLATE NOCASE
+      LIMIT 7
+    SQL;
+
+    $res = $this->db->query($sql);
+    $arr = [];
+    while($row = $res->fetchArray(SQLITE3_NUM))
+    {
+      array_push($arr, [ $row[0], $row[1] ]);
+    }
+    $res->finalize();
+
+    return $arr;
+  }
+
   public function get_top_books()
   {
     $sql = <<<SQL
