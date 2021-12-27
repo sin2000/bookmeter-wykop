@@ -28,6 +28,7 @@ class summary_utils
       'minuta' => ['minuty', 'minut'],
       'sekunda' => ['sekundy', 'sekund'],
       'książkę' => ['książki', 'książek'],
+      'książka' => ['książki', 'książek'],
       'pasek' => ['paski', 'pasków'],
       'różowy' => ['różowe', 'różowych'],
       'niebieski' => ['niebieskie', 'niebieskich'],
@@ -106,6 +107,17 @@ class summary_utils
     $login_count = $this->bmdb->get_login_count();
 
     return $login_count;
+  }
+
+  public function get_book_per_user($user_count)
+  {
+    if($user_count == 0)
+      $user_count = 1;
+
+    $x = round($this->book_counter / $user_count);
+    $x = $x . ' ' . $this->get_plural('książkę', $x);
+
+    return $x;
   }
 
   public function get_sex_stats()

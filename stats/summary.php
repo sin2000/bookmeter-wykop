@@ -28,6 +28,7 @@ $time_to_end = htmlspecialchars($summ_util->get_time_left_to_end());
 $book_count = htmlspecialchars($summ_util->get_book_count());
 $book_per_day = htmlspecialchars($summ_util->get_book_per_day());
 $login_count = htmlspecialchars($summ_util->get_login_count());
+$book_per_all_users = htmlspecialchars($summ_util->get_book_per_user($login_count));
 
 $top_users_html = $summ_util->get_top_users();
 $top_books_html = $summ_util->get_top_books();
@@ -118,6 +119,9 @@ $worst_books_html = $summ_util->get_top_books(true);
         </div>
         <div class="mt-1">
         W tej edycji wzięło udział <b><?php echo $login_count ?> wykopowiczów</b>, w tym <?php echo $sex_stats ?>.
+        </div>
+        <div class="mt-1">
+        Na każdego uczestnika przypada średnio <b><?php echo $book_per_all_users ?></b>.
         </div>
       </div>
 
