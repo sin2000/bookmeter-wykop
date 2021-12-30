@@ -143,7 +143,7 @@ $worst_books_html = $summ_util->get_top_books(true);
       </tbody>
       </table>
 
-      <div class="mt-3"><b>Najbardziej plusowani uczestnicy:</b></div>
+      <div class="mt-3"><b>Uczestnicy, którzy zebrali największą liczbę plusów:</b></div>
       <table class="table table-sm mt-2 table-hover">
       <thead class="thead-light">
         <tr>
