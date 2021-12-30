@@ -62,6 +62,9 @@ class summary_utils
 
   public function get_time_left_to_end()
   {
+    if($this->has_edition_ended())
+      return '';
+
     /** @var DateInterval **/
     $diff = $this->statu->get_edition_end_date()->diff($this->curr_datetime);
 
@@ -95,7 +98,12 @@ class summary_utils
 
   public function get_book_per_day()
   {
-    $diff = $this->curr_datetime->diff($this->statu->get_edition_start_date());
+    $diff = null;
+    if($this->has_edition_ended())
+      $diff = $this->statu->get_edition_end_date()->diff($this->statu->get_edition_start_date());
+    else
+      $diff = $this->curr_datetime->diff($this->statu->get_edition_start_date());
+
     $bookpd = round($this->book_counter / $diff->days);
     $bookpd = $bookpd . ' ' . $this->get_plural('książkę', $bookpd);
 

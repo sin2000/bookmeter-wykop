@@ -22,13 +22,15 @@ $bmdb = new bm_database();
 $last_upd_arr = $bmdb->fetch_last_update_times();
 
 $summ_util = new summary_utils($statu, $bmdb);
+$has_edition_ended = $summ_util->has_edition_ended();
 $progress = htmlspecialchars($summ_util->get_progress());
-$edition_end = $summ_util->has_edition_ended() ? 'zakończyła' : 'zakończy';
+$edition_end = $has_edition_ended ? 'zakończyła' : 'zakończy';
 $time_to_end = htmlspecialchars($summ_util->get_time_left_to_end());
 $book_count = htmlspecialchars($summ_util->get_book_count());
 $book_per_day = htmlspecialchars($summ_util->get_book_per_day());
 $login_count = htmlspecialchars($summ_util->get_login_count());
 $book_per_all_users = htmlspecialchars($summ_util->get_book_per_user($login_count));
+$css_dnone_on_end = $has_edition_ended ? 'd-none' : '';
 
 $top_users_html = $summ_util->get_top_users();
 $top_voted_users_html = $summ_util->get_top_voted_users();
@@ -110,7 +112,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         V Edycja rozpoczęła się <b><?php echo $edition_start_date_sum ?> roku(<?php echo $start_day ?>)</b>, 
         a <?php echo $edition_end ?> się <b><?php echo $edition_end_date_sum ?>(<?php echo $end_day ?>)</b>.
         </div>
-        <div class="mt-1">
+        <div class="mt-1 <?php echo $css_dnone_on_end?>">
         Czas pozostały do końca edycji to: <b><?php echo $time_to_end ?></b>.
         </div>
         <div class="mt-1">
@@ -123,7 +125,7 @@ $worst_books_html = $summ_util->get_top_books(true);
         W tej edycji wzięło udział <b><?php echo $login_count ?> wykopowiczów</b>, w tym <?php echo $sex_stats ?>.
         </div>
         <div class="mt-1">
-        Na każdego uczestnika przypada średnio <b><?php echo $book_per_all_users ?></b>.
+        Na każdego uczestnika przypadło średnio <b><?php echo $book_per_all_users ?></b>.
         </div>
       </div>
 
