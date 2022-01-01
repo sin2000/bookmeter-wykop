@@ -9,9 +9,9 @@ class bm_database
   /** @var SQLite3Result **/
   private $tmpres = null;
 
-  public function __construct()
+  public function __construct($db_filepath)
   {
-    $this->open();
+    $this->open($db_filepath);
   }
 
   function __destruct()
@@ -20,7 +20,7 @@ class bm_database
     {
       $this->tmpres->finalize();
       unset($this->tmpres);
-    }
+    } 
 
     $this->db->close();
   }
@@ -366,9 +366,9 @@ class bm_database
     return $arr;
   }
 
-  private function open()
+  private function open($db_filepath)
   {
-    $this->db = new SQLite3(confidential_vars::stats_db_filepath, SQLITE3_OPEN_READONLY);
+    $this->db = new SQLite3($db_filepath, SQLITE3_OPEN_READONLY);
     if($this->db->loadExtension(confidential_vars::sqlite_ext_filename) == false)
     {
       $this->db->createCollation('POLISH', 'bm_database::mycollation');

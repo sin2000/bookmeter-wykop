@@ -104,6 +104,9 @@ class summary_utils
     else
       $diff = $this->curr_datetime->diff($this->statu->get_edition_start_date());
 
+    if($diff->days == 0)
+      return $this->book_counter . ' ' . $this->get_plural('książkę', $this->book_counter);
+
     $bookpd = round($this->book_counter / $diff->days);
     $bookpd = $bookpd . ' ' . $this->get_plural('książkę', $bookpd);
 
@@ -123,7 +126,7 @@ class summary_utils
       $user_count = 1;
 
     $x = round($this->book_counter / $user_count);
-    $x = $x . ' ' . $this->get_plural('książkę', $x);
+    $x = $x . ' ' . $this->get_plural('książka', $x);
 
     return $x;
   }

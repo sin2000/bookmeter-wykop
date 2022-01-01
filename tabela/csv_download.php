@@ -1,9 +1,10 @@
 <?php
 
 require '../utils/bm_database.php';
+require '../stats/utils/stats_utils.php';
 
 $filename = 'bookmeter.csv';
-$bm_db = new bm_database();
+$bm_db = new bm_database((new stats_utils(stats_utils::bm_edition_6))->get_bm_db_filepath());
 $bm_db->start_get_bm_view();
 
 header('Content-Type: application/csv');

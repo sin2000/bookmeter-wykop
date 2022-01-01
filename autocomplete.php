@@ -1,6 +1,7 @@
 <?php 
 
 require_once 'utils/bm_database.php';
+require 'stats/utils/stats_utils.php';
 
 function response($arr)
 {
@@ -27,7 +28,7 @@ $term_len = mb_strlen($term);
 if($term_len < $min_len || $term_len > 3000)
   response([]);
 
-$bm_db = new bm_database();
+$bm_db = new bm_database((new stats_utils(stats_utils::bm_actual_edition))->get_bm_db_filepath());
 $ret_vals = [];
 switch($field)
 {

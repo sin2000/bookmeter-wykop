@@ -15,8 +15,8 @@ $edition_start_date = htmlspecialchars($edition_start_date);
 $end_time = $statu->get_bm_data_update_time();
 $end_time = htmlspecialchars($end_time);
 
-$csv_filepath = $statu->get_bookmeter_csv_filepath();
-$undetected_filepath = $statu->get_undetected_filepath();
+$csv_filepath = $statu->get_bookmeter_csv_url();
+$undetected_filepath = $statu->get_undetected_file_url();
 
 ?>
 
@@ -55,7 +55,7 @@ $undetected_filepath = $statu->get_undetected_filepath();
         -
         <a href="<?php echo $base_url ?>">Dodaj wpis</a>
         -
-        <b><a href="index.php">V edycja</a></b>
+        <b><a href="../tabela/edycja5/index.php">V edycja</a></b>
       </div>
     </div>
 

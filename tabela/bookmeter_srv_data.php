@@ -19,7 +19,7 @@
  */
 
 require '../utils/confidential_vars.php';
-require 'utils/stats_utils.php';
+require '../stats/utils/stats_utils.php';
  
 // DB table to use
 $table = 'entry_view';
@@ -59,7 +59,7 @@ $columns = array(
  
 // SQL server connection information
 $sql_details = array(
-    'filepath' => confidential_vars::stats_db_filepath,
+    'filepath' => confidential_vars::bm_ed6_db_filepath,
 );
 
 $ign_logins = (new stats_utils(stats_utils::bm_actual_edition))->get_ignored_logins();
@@ -78,7 +78,7 @@ if($ign_logins != '')
  * server-side, there is no need to edit below this line.
  */
  
-require('utils/ssp.class.php');
+require('../stats/utils/ssp.class.php');
  
 echo json_encode(
     SSP::complex($_GET, $sql_details, $table, $primaryKey, $columns, $adv_filter)

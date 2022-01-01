@@ -1,23 +1,35 @@
 <?php
 
 require_once 'bm_edition.php';
+require_once __DIR__ . '/../../utils/app_auth.php';
 
 class stats_utils
 {
   public const bm_edition_4 = 4;
   public const bm_edition_5 = 5;
-  public const bm_actual_edition = self::bm_edition_5;
-  private const data_dir = '../data';
+  public const bm_edition_6 = 6;
+  public const bm_actual_edition = self::bm_edition_6;
+  private const data_dir_name = 'data';
+  private const data_dir = __DIR__ . '/../../' . self::data_dir_name;
+  private $data_url;
   private $editions = null;
   private $bm_current_edition = null;
   private $setting_ingored_logins_key = 'setting_ignored_logins';
 
   public function __construct($edition)
-  {    
+  {
+    $this->data_url = (new app_auth())->get_current_base_url() . self::data_dir_name;
+
     $this->bm_current_edition = $edition;
     $this->editions = array(
-      self::bm_edition_4 => new bm_edition(self::bm_edition_4, new DateTime('2020-07-29'), new DateTime('2020-12-31 23:59:59')),
-      self::bm_edition_5 => new bm_edition(self::bm_edition_5, new DateTime('2021-01-01'), new DateTime('2021-12-31 23:59:59')),
+      self::bm_edition_4 => new bm_edition(self::bm_edition_4, new DateTime('2020-07-29'), new DateTime('2020-12-31 23:59:59'),
+        'undetected_4th_edition.txt', '', 'bookmeter_4th_edition.csv'),
+
+      self::bm_edition_5 => new bm_edition(self::bm_edition_5, new DateTime('2021-01-01'), new DateTime('2021-12-31 23:59:59'),
+        'niewykryte_edycja5.txt', confidential_vars::bm_ed5_db_filepath, ''),
+
+      self::bm_edition_6 => new bm_edition(self::bm_edition_6, new DateTime('2022-01-01'), new DateTime('2022-12-31 23:59:59'),
+        'edycja6/undetected.txt', confidential_vars::bm_ed6_db_filepath, ''),
     );
   } 
 
@@ -27,33 +39,23 @@ class stats_utils
   }
 
   public function get_bookmeter_csv_filepath()
-  {
-    switch($this->bm_current_edition)
-    {
-      case self::bm_actual_edition:
-        return self::data_dir . '/bookmeter.csv';
-      break;
-      case self::bm_edition_4:
-        return self::data_dir . '/bookmeter_4th_edition.csv';
-      break;
-    }
-
-    return '';
+  {    
+    return self::data_dir . '/' . $this->editions[$this->bm_current_edition]->csv_file;
   }
 
-  public function get_undetected_filepath()
-  {
-    switch($this->bm_current_edition)
-    {
-      case self::bm_actual_edition:
-        return self::data_dir . '/undetected.txt';
-      break;
-      case self::bm_edition_4:
-        return self::data_dir . '/undetected_4th_edition.txt';
-      break;
-    }
+  public function get_bookmeter_csv_url()
+  {    
+    return $this->data_url . '/' . $this->editions[$this->bm_current_edition]->csv_file;
+  }
 
-    return '';
+  public function get_undetected_file_url()
+  {
+    return $this->data_url . '/' . $this->editions[$this->bm_current_edition]->undetected_fn;
+  }
+
+  public function get_bm_db_filepath()
+  {
+    return $this->editions[$this->bm_current_edition]->db_file;
   }
 
   public function get_edition_start_date($as_string = false)

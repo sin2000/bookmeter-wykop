@@ -37,14 +37,14 @@ class app_auth
       }
     }
 
-    $redir_url = $this->get_current_base_url() . '/wykopconnect.php';
+    $redir_url = $this->get_current_base_url() . 'wykopconnect.php';
     $this->redirect($redir_url);
   }
 
   public function redirect_to_login()
   {
     $auth_id = urlencode($this->generate_auth_id());
-    $login_url = $this->get_current_base_url() . '/login.php?id=' . $auth_id;
+    $login_url = $this->get_current_base_url() . 'login.php?id=' . $auth_id;
     $wapi = new wykop_api;
     $redir_url = $wapi->get_login_connect_url($login_url);
 
@@ -196,12 +196,20 @@ class app_auth
   public function get_current_base_url($host_only = false)
   {
     $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http';
-    $reqarr = explode('/', $_SERVER['REQUEST_URI']);
     $req = '';
-    if($host_only == false && count($reqarr) >= 3)
-      $req = '/' . $reqarr[1];
+    if($host_only == false)
+    {
+      $req = confidential_vars::server_suffix;
+      if($req != '')
+        $req .= '/';
+    }
+
+    $srv_name = $_SERVER['SERVER_NAME'];
+    $last_char = $srv_name[-1];
+    if($last_char != '/')
+      $srv_name .= '/';
     
-    return $scheme . '://' . $_SERVER['SERVER_NAME'] . $req;
+    return $scheme . '://' . $srv_name . $req;
   }
 
   private function encrypt_data($data, $key)
