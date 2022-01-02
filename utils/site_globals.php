@@ -3,7 +3,7 @@
 class site_globals
 {
   public static $tag_name = "bookmeter";
-  public static $footer_info = "2020-2021 @szokiniedowierzanie";
+  public static $footer_info = "2020-2022 @szokiniedowierzanie";
 }
 
 ?>
