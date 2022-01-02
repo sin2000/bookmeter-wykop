@@ -79,6 +79,9 @@ $base_url = (new app_auth())->get_current_base_url();
     </footer>
 
   </div>
+
+  <script src="../js/jquery-3.5.1.min.js"></script>
+  <script src="../js/bootstrap.bundle.min.js?v=2"></script>
 </body>
 
 </html>
