@@ -54,22 +54,27 @@ $base_url = (new app_auth())->get_current_base_url();
 
       <ol class="pl-4">
         <li>
-          Organizatorem jest @<a href="https://www.wykop.pl/ludzie/kizimajaro/" target="_blank">kizimajaro</a>.
+        Bookmeter to akcja, w której dodajemy książki, kończąc na koniec roku. Podsumowanie odbędzie się na początku stycznia nowego roku.
         </li>
         <li>
-          W tej edycji dodajemy książki. Kończymy na koniec roku. Podsumowanie odbędzie się na początku stycznia nowego roku.
+        W edycji mogą brać udział książki zarówno w formie papierowej, elektronicznej, a także audiobooki.
         </li>
         <li>
-          W edycji mogą brać udział książki zarówno w formie papierowej, elektronicznej jak i e-book.
+        Prawidłowo dodany wpis musi zawierać: tytuł, autora, ocenę, zdjęcie okładki oraz krótką opinię/recenzję (minimum 3 zdania).
         </li>
         <li>
-          Prawidłowo dodany wpis musi zawierać: tytuł, autora, ocenę, zdjęcie okładki oraz krótką opinię/recenzję.
+        Jeden wpis = jedna książka. Wiem, że o wiele łatwiej jest dodać np. ostatnich 5 książek w jednym wpisie,
+        ale później ciężko jest to wyciągnąć do stworzenia podsumowania, dlatego w miarę możliwości bardzo proszę o dodawanie zgodne z powyższym.
         </li>
         <li>
-          Jeden wpis = jedna książka. Wiem, że o wiele łatwiej jest dodać np. ostatnich 5 książek w jednym wpisie,
-          ale później ciężko jest to wyciągnąć do stworzenia podsumowania, dlatego w miarę możliwości bardzo proszę o dodawanie zgodne z powyższym.
+        Wszystkie wpisy uważane za trolling i SPAM będą usuwane z bazy.
         </li>
-        <li>Przede wszystkim proszę czerpać nieograniczoną przyjemność z czytanych książek ( ͡° ͜ʖ ͡°).</li>
+        <li>
+        Organizatorem #bookmeter jest @<a href="https://www.wykop.pl/ludzie/kizimajaro/" target="_blank">kizimajaro</a> - tutaj można zgłaszać wszelkie sugestie czy uwagi.
+        </li>
+        <li>
+        Przede wszystkim proszę czerpać nieograniczoną przyjemność z czytanych książek ( ͡° ͜ʖ ͡°).
+        </li>
       </ol>
     </div>
 

@@ -145,7 +145,7 @@ $genre_options = create_options_tags($genre_list);
           <span class="sr-only">Loading...</span>
         </div>
         <span class="font-weight-bold align-middle" id="book_counter_input"></span>
-        <span class="align-middle small">(<a href="stats">statystyki</a>)</span>
+        <span class="align-middle small">(<a href="tabela/index.php">statystyki</a>)</span>
       </div>
     </div>
 
